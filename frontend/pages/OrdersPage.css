@@ -1,0 +1,394 @@
+/* OrdersPage specific styles */
+
+.orders-page {
+    min-height: calc(100vh - 60px);
+    background-color: #f9f9f9;
+}
+
+.orders-header {
+    padding: 20px 16px;
+    background-color: white;
+}
+
+.orders-header h1 {
+    margin: 0;
+    font-size: 22px;
+    color: #333;
+}
+
+.tab-navigation {
+    display: flex;
+    background-color: white;
+    padding: 0 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.tab-button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 16px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #777;
+    position: relative;
+    cursor: pointer;
+}
+
+.tab-button.active {
+    color: #ff6b00;
+}
+
+.tab-button.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #ff6b00;
+    border-radius: 3px 3px 0 0;
+}
+
+.orders-content {
+    padding: 16px;
+}
+
+/* Active order styles */
+.active-order {
+    margin-bottom: 16px;
+}
+
+.order-tracking-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.tracking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.tracking-header h2 {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+}
+
+.order-id {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.order-status {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.restaurant-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.info-icon {
+    color: #666;
+    font-size: 20px;
+}
+
+.restaurant-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+}
+
+.restaurant-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.delivery-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.time-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.time-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.time-info p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.details-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: #ff6b00;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.tracking-progress {
+    margin: 24px 0;
+}
+
+.tracking-step {
+    display: flex;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: #999;
+}
+
+.tracking-step.completed .step-icon {
+    background-color: #e6f7ed;
+    color: #4caf50;
+}
+
+.step-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 50%;
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    margin: 0 0 2px 0;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.tracking-step.completed .step-title {
+    color: #333;
+}
+
+.step-time {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.step-line {
+    position: absolute;
+    top: 24px;
+    left: 12px;
+    height: 30px;
+    width: 1px;
+    background-color: #ddd;
+}
+
+.tracking-step.completed .step-line {
+    background-color: #4caf50;
+}
+
+.order-summary {
+    margin-top: 24px;
+}
+
+.order-summary h3 {
+    font-size: 16px;
+    margin: 0 0 12px 0;
+}
+
+.order-items {
+    margin-bottom: 16px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.item-detail {
+    display: flex;
+    gap: 8px;
+}
+
+.item-quantity {
+    color: #666;
+}
+
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    font-weight: 500;
+}
+
+.total-amount {
+    font-weight: 600;
+    color: #333;
+}
+
+.order-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.primary-button,
+.secondary-button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.primary-button {
+    background-color: #ff6b00;
+    color: white;
+}
+
+.secondary-button {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+}
+
+.empty-state p {
+    margin: 0 0 24px 0;
+    color: #777;
+}
+
+/* History list */
+.order-history h2 {
+    font-size: 18px;
+    margin: 0 0 16px 0;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.history-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    padding: 16px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.history-header h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+}
+
+.history-date {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.history-items {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.history-item {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.history-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-total {
+    font-size: 14px;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    color: #ff6b00;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+}

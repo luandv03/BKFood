@@ -1,0 +1,42 @@
+/* ThemedText styles */
+.themed-text {
+    color: #333;
+}
+
+.themed-text-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.themed-text-subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.themed-text-heading {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.themed-text-body {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.themed-text-link {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ff6b00;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.themed-text-caption {
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+}

@@ -1,0 +1,6 @@
+/* IconSymbol styles */
+.icon-symbol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

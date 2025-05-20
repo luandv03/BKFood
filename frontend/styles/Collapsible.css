@@ -1,0 +1,13 @@
+.collapsible-heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.collapsible-content {
+    margin-top: 6px;
+    margin-left: 24px;
+}

@@ -1,0 +1,143 @@
+/* Global styles for the BKFood app */
+
+/* App-wide styles */
+.App {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main navigation */
+.main-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #999;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.nav-link.active {
+    color: #ff6b00;
+}
+
+.nav-icon {
+    margin-bottom: 4px;
+    font-size: 24px;
+}
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    padding-bottom: 60px; /* Space for the bottom navigation */
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Form elements */
+.search-input {
+    background-color: #f5f5f5;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.button {
+    background-color: #ff6b00;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #e65100;
+}
+
+/* Card styles */
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 16px;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5 {
+    margin-top: 0;
+    color: #333;
+}
+
+p {
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Utility classes */
+.text-center {
+    text-align: center;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-between {
+    justify-content: space-between;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+/* Rating stars */
+.rating {
+    color: #ffc107;
+}
+
+/* Busy badge */
+.busy-badge {
+    background-color: rgba(244, 67, 54, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
