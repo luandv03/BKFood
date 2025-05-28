@@ -12,6 +12,8 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./ExplorePage.css";
+import ReviewForm from '../components/ReviewForm';
+import ReviewList from '../components/ReviewList';
 
 // Sample restaurant data
 const restaurantDetail = {
@@ -74,6 +76,29 @@ const ExplorePage = () => {
     const [showOrderForm, setShowOrderForm] = useState(false);
     const [selectedQuantities, setSelectedQuantities] = useState({});
     const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviews, setReviews] = useState([
+        {
+            id: 1,
+            userName: "Nguyễn Văn A",
+            userAvatar: "https://via.placeholder.com/40",
+            rating: 5,
+            date: "20/05/2025",
+            comment: "Món ăn rất ngon, phục vụ nhanh chóng!",
+            images: [
+                "https://images.unsplash.com/photo-1503764654157-72d979d9af2f",
+                "https://images.unsplash.com/photo-1555126634-323283e090fa"
+            ]
+        },
+        {
+            id: 2,
+            userName: "Trần Thị B",
+            userAvatar: "https://via.placeholder.com/40",
+            rating: 4,
+            date: "19/05/2025",
+            comment: "Không gian quán đẹp, đồ ăn tạm ổn."
+        }
+    ]);
 
     useEffect(() => {
         function handleScroll() {
@@ -135,6 +160,18 @@ const ExplorePage = () => {
         (sum, qty) => sum + qty,
         0
     );
+
+    const handleReviewSubmit = (newReview) => {
+        const reviewToAdd = {
+            id: reviews.length + 1,
+            userName: "Người dùng",
+            userAvatar: "https://via.placeholder.com/40",
+            date: new Date().toLocaleDateString('vi-VN'),
+            ...newReview
+        };
+        setReviews([reviewToAdd, ...reviews]);
+        setShowReviewForm(false);
+    };
 
     return (
         <div className="explore-page">
@@ -247,23 +284,33 @@ const ExplorePage = () => {
                     </div>
                 </div>
 
-                {/* Restaurant Reviews Section - Placeholder */}
+                {/* Restaurant Reviews Section */}
                 <div className="restaurant-reviews">
-                    <h2>Đánh giá từ khách hàng</h2>
-                    <div className="review-summary">
-                        <FaStar className="star-icon" />
-                        <span>{restaurantDetail.rating} ({restaurantDetail.reviewCount} đánh giá)</span>
+                    <div className="reviews-header">
+                        <h2>Đánh giá từ khách hàng</h2>
+                        <div className="review-summary">
+                            <FaStar className="star-icon" />
+                            <span>{restaurantDetail.rating} ({restaurantDetail.reviewCount} đánh giá)</span>
+                        </div>
                     </div>
-                    {/* Placeholder for individual reviews - In a real app, map through review data */}
-                    <div className="review-item-placeholder">
-                        <p><strong>Nguyễn Văn A</strong> - <FaStar /><FaStar /><FaStar /><FaStar /><FaStar /></p>
-                        <p>"Món ăn rất ngon, phục vụ nhanh chóng!"</p>
-                    </div>
-                    <div className="review-item-placeholder">
-                        <p><strong>Trần Thị B</strong> - <FaStar /><FaStar /><FaStar /><FaStar /><FaStar className="empty-star"/></p>
-                        <p>"Không gian quán đẹp, đồ ăn tạm ổn."</p>
-                    </div>
-                    <button className="view-all-reviews-btn">Xem tất cả đánh giá</button>
+                    
+                    <button 
+                        className="write-review-btn"
+                        onClick={() => setShowReviewForm(true)}
+                    >
+                        Viết đánh giá
+                    </button>
+
+                    {showReviewForm && (
+                        <div className="review-form-overlay">
+                            <ReviewForm 
+                                onSubmit={handleReviewSubmit}
+                                onClose={() => setShowReviewForm(false)}
+                            />
+                        </div>
+                    )}
+
+                    <ReviewList reviews={reviews} />
                 </div>
 
                 {/* Featured dishes */}
