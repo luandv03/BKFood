@@ -8,17 +8,25 @@ const OrderConfirmationPage = () => {
     const location = useLocation();
     const { restaurant, cartItems, totalPrice } = location.state || {}; // Get data passed from previous page
 
+    const [dataReady, setDataReady] = useState(false); // New state
+
     const [deliveryTime, setDeliveryTime] = useState("ASAP");
     const [orderType, setOrderType] = useState("delivery"); // 'delivery' or 'pickup'
 
     // Sample available time slots (in a real app, this would come from the backend)
     const timeSlots = ["ASAP", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM"];
 
-    if (!restaurant || !cartItems || totalPrice === undefined) {
-        // Handle cases where necessary data is missing, maybe redirect to home
-        useEffect(() => {
+    useEffect(() => {
+        if (!restaurant || !cartItems || totalPrice === undefined) {
+            // If data is missing, navigate away.
             navigate('/');
-        }, [navigate]);
+        } else {
+            setDataReady(true); // Mark data as ready for rendering
+        }
+    }, [restaurant, cartItems, totalPrice, navigate]); // Effect dependencies
+
+    if (!dataReady) {
+        // Show loading message or spinner until data is validated and ready
         return <p>Đang tải thông tin đơn hàng...</p>;
     }
 
