@@ -122,25 +122,11 @@ const HomePage = ({ showSuggestion }) => {
     const ratingOptions = ["5 sao", "4+ sao", "3+ sao", "Tất cả"];
 
     useEffect(() => {
-        if (location.state && location.state.activeTab === "Recommended") {
-            setActiveFilter(filterOptions.RECOMMENDED);
-        }
         // Simulate loading delay
         const timer = setTimeout(() => {
             setIsLoading(false);
-            // Show recommendation after a short delay if not coming from recommendation click
-            if (
-                !(location.state && location.state.activeTab === "Recommended")
-            ) {
-                const alreadyShown = sessionStorage.getItem(
-                    "foodSuggestionShown"
-                );
-                if (alreadyShown === null || alreadyShown === "false") {
-                    setShowRecommendation(true);
-                    // Set the flag to true after showing it once
-                    sessionStorage.setItem("foodSuggestionShown", "true");
-                }
-            }
+            // Show recommendation after a short delay
+            setTimeout(() => setShowRecommendation(true), 500);
         }, 1500);
 
         // Add scroll listener
@@ -150,7 +136,7 @@ const HomePage = ({ showSuggestion }) => {
             clearTimeout(timer);
             window.removeEventListener("scroll", handleScroll);
         };
-    }, [location.state]);
+    }, []);
 
     const handleScroll = () => {
         setIsScrolled(window.scrollY > 50);
