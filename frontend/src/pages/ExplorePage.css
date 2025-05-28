@@ -249,10 +249,17 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.restaurant-reviews h2 {
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.reviews-header h2 {
     font-size: 1.5em;
     color: #333;
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 .review-summary {
@@ -261,11 +268,43 @@
     gap: 8px;
     font-size: 1.1em;
     color: #555;
-    margin-bottom: 16px;
 }
 
 .review-summary .star-icon {
-    color: #f5a623; /* Gold star */
+    color: #ffc107;
+}
+
+.write-review-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: background-color 0.2s;
+}
+
+.write-review-btn:hover {
+    background-color: #e65c00;
+}
+
+.review-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 16px;
 }
 
 .review-item-placeholder {
@@ -286,7 +325,7 @@
 }
 
 .review-item-placeholder strong {
-    color: #007bff;
+    color: #ff6b00;
 }
 
 .review-item-placeholder .empty-star {
@@ -297,7 +336,7 @@
     display: block;
     width: 100%;
     padding: 12px;
-    background-color: #007bff;
+    background-color: #ff6b00;
     color: white;
     border: none;
     border-radius: 4px;
@@ -309,7 +348,7 @@
 }
 
 .view-all-reviews-btn:hover {
-    background-color: #0056b3;
+    background-color: #e65c00;
 }
 
 /* Featured dishes */
