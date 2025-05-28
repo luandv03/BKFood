@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import GamePage from "./pages/GamePage";
 import ReviewsPage from "./pages/ReviewsPage";
+import FoodRecommendList from "./pages/FoodRecommendList";
 
 function App() {
     useEffect(() => {
@@ -40,6 +41,10 @@ function App() {
                     />
                     <Route path="game" element={<GamePage />} />
                     <Route path="reviews" element={<ReviewsPage />} />
+                    <Route
+                        path="food-recommendations"
+                        element={<FoodRecommendList />}
+                    />
 
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>

@@ -9,11 +9,36 @@ import {
     FaUsers,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import FoodRecommendation from "../components/FoodRecommendation";
 import "./HomePage.css";
 
 // Sample restaurant data
 const restaurants = [
+    {
+        id: "4",
+        name: "Bánh Mì Pate",
+        rating: 4.7,
+        address: "35 Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+        distance: "0.3",
+        openingHours: "6 AM - 7 PM",
+        price: "25,000 - 40,000₫",
+        imageUrl:
+            "https://images.unsplash.com/photo-1600688640154-9619e002df30?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+        isBusy: false,
+        isRecommended: false,
+    },
+    {
+        id: "5",
+        name: "Bún Đậu Mắm Tôm",
+        rating: 4.4,
+        address: "78 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
+        distance: "0.6",
+        openingHours: "10 AM - 9 PM",
+        price: "50,000 - 95,000₫",
+        imageUrl:
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
+        isBusy: true,
+        isRecommended: true,
+    },
     {
         id: "1",
         name: "Phở Hà Nội",
@@ -53,32 +78,6 @@ const restaurants = [
         isBusy: true,
         isRecommended: true,
     },
-    {
-        id: "4",
-        name: "Bánh Mì Pate",
-        rating: 4.7,
-        address: "35 Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
-        distance: "0.3",
-        openingHours: "6 AM - 7 PM",
-        price: "25,000 - 40,000₫",
-        imageUrl:
-            "https://images.unsplash.com/photo-1600688640154-9619e002df30?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
-        isBusy: false,
-        isRecommended: false,
-    },
-    {
-        id: "5",
-        name: "Bún Đậu Mắm Tôm",
-        rating: 4.4,
-        address: "78 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
-        distance: "0.6",
-        openingHours: "10 AM - 9 PM",
-        price: "50,000 - 95,000₫",
-        imageUrl:
-            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
-        isBusy: true,
-        isRecommended: true,
-    },
 ];
 
 // Filter option types
@@ -89,7 +88,7 @@ const filterOptions = {
     RECOMMENDED: "Gợi ý",
 };
 
-const HomePage = ({ showSuggestion }) => {
+const FoodRecommendList = ({ showSuggestion }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -120,23 +119,6 @@ const HomePage = ({ showSuggestion }) => {
         "Tất cả",
     ];
     const ratingOptions = ["5 sao", "4+ sao", "3+ sao", "Tất cả"];
-
-    useEffect(() => {
-        // Simulate loading delay
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-            // Show recommendation after a short delay
-            setTimeout(() => setShowRecommendation(true), 500);
-        }, 1500);
-
-        // Add scroll listener
-        window.addEventListener("scroll", handleScroll);
-
-        return () => {
-            clearTimeout(timer);
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
 
     const handleScroll = () => {
         setIsScrolled(window.scrollY > 50);
@@ -285,12 +267,6 @@ const HomePage = ({ showSuggestion }) => {
         navigate(`/explore`, { state: { restaurant } });
     };
 
-    const handleRecommendationClose = () => {
-        setShowRecommendation(false);
-        // Update session storage to remember that the recommendation has been shown
-        sessionStorage.setItem("foodSuggestionShown", "false");
-    };
-
     const toggleFilterPopup = () => {
         setShowFilterPopup((prevState) => !prevState);
         // Reset dropdown visibilities when opening/closing popup
@@ -348,7 +324,7 @@ const HomePage = ({ showSuggestion }) => {
                     <input
                         type="text"
                         className="search-input"
-                        placeholder="Phở..."
+                        placeholder="Danh sách đề xuất món ăn..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -484,7 +460,7 @@ const HomePage = ({ showSuggestion }) => {
             )}
             {/* Main content */}
             <main className="home-content">
-                {isLoading ? (
+                {!isLoading ? (
                     <div className="loading-container">
                         <div className="loader"></div>
                         <p>Đang tải danh sách nhà hàng...</p>
@@ -543,15 +519,6 @@ const HomePage = ({ showSuggestion }) => {
                                 {filterOptions.RECOMMENDED}
                             </button>
                         </div>
-                        {/* Food recommendation popup */}
-                        {JSON.parse(
-                            sessionStorage.getItem("foodSuggestionShown")
-                        ) &&
-                            showRecommendation && (
-                                <FoodRecommendation
-                                    onClose={handleRecommendationClose}
-                                />
-                            )}
                         {/* Restaurant list */}
                         <div className="home-restaurant-list">
                             {getFilteredRestaurants().map((restaurant) => (
@@ -625,4 +592,4 @@ const HomePage = ({ showSuggestion }) => {
     );
 };
 
-export default HomePage;
+export default FoodRecommendList;

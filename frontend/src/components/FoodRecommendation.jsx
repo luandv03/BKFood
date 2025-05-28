@@ -8,7 +8,7 @@ import "../styles/FoodRecommendation.css";
 const FoodRecommendation = ({ onClose }) => {
     const navigate = useNavigate();
     const [animation] = useState(true);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(-1);
 
     // Dữ liệu mẫu cho món ăn được gợi ý
     const recommendedFoods = [
@@ -88,6 +88,12 @@ const FoodRecommendation = ({ onClose }) => {
                                     navigate("/explore");
                                     if (onClose) onClose();
                                 }}
+                                onPointerMove={() => {
+                                    setCurrentIndex(index);
+                                }}
+                                style={{
+                                    cursor: "pointer",
+                                }}
                             >
                                 <img
                                     src={food.imageUrl}
@@ -110,7 +116,7 @@ const FoodRecommendation = ({ onClose }) => {
                     <button
                         className="see-more-button"
                         onClick={() => {
-                            navigate("/explore");
+                            navigate("/food-recommendations");
                             if (onClose) onClose();
                         }}
                     >
