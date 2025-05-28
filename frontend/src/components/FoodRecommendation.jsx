@@ -85,7 +85,7 @@ const FoodRecommendation = ({ onClose }) => {
                                     currentIndex === index ? "active" : ""
                                 }`}
                                 onClick={() => {
-                                    navigate("/explore");
+                                    navigate("/", { state: { activeTab: "Recommended" } });
                                     if (onClose) onClose();
                                 }}
                             >
@@ -110,7 +110,7 @@ const FoodRecommendation = ({ onClose }) => {
                     <button
                         className="see-more-button"
                         onClick={() => {
-                            navigate("/explore");
+                            navigate("/", { state: { activeTab: "Recommended" } });
                             if (onClose) onClose();
                         }}
                     >

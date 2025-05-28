@@ -8,7 +8,7 @@ import {
     FaTimes,
     FaUsers,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import FoodRecommendation from "../components/FoodRecommendation";
 import "./HomePage.css";
 
@@ -25,6 +25,7 @@ const restaurants = [
         imageUrl:
             "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1174&q=80",
         isBusy: true,
+        isRecommended: true,
     },
     {
         id: "2",
@@ -37,6 +38,7 @@ const restaurants = [
         imageUrl:
             "https://images.unsplash.com/photo-1552611052-33e04de081de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
         isBusy: false,
+        isRecommended: false,
     },
     {
         id: "3",
@@ -49,6 +51,7 @@ const restaurants = [
         imageUrl:
             "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
         isBusy: true,
+        isRecommended: true,
     },
     {
         id: "4",
@@ -61,6 +64,7 @@ const restaurants = [
         imageUrl:
             "https://images.unsplash.com/photo-1600688640154-9619e002df30?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
         isBusy: false,
+        isRecommended: false,
     },
     {
         id: "5",
@@ -73,6 +77,7 @@ const restaurants = [
         imageUrl:
             "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
         isBusy: true,
+        isRecommended: true,
     },
 ];
 
@@ -81,10 +86,12 @@ const filterOptions = {
     ALL: "Tất cả",
     NEAREST: "Gần nhất",
     HIGHEST_RATED: "Yêu thích nhất",
+    RECOMMENDED: "Gợi ý",
 };
 
 const HomePage = ({ showSuggestion }) => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState(filterOptions.ALL);
@@ -114,11 +121,21 @@ const HomePage = ({ showSuggestion }) => {
     const ratingOptions = ["5 sao", "4+ sao", "3+ sao", "Tất cả"];
 
     useEffect(() => {
+        if (location.state && location.state.activeTab === "Recommended") {
+            setActiveFilter(filterOptions.RECOMMENDED);
+        }
         // Simulate loading delay
         const timer = setTimeout(() => {
             setIsLoading(false);
-            // Show recommendation after a short delay
-            setTimeout(() => setShowRecommendation(true), 500);
+            // Show recommendation after a short delay if not coming from recommendation click
+            if (!(location.state && location.state.activeTab === "Recommended")) {
+                const alreadyShown = JSON.parse(
+                    sessionStorage.getItem("foodSuggestionShown")
+                );
+                if (!alreadyShown) {
+                     setShowRecommendation(true);
+                }
+            }
         }, 1500);
 
         // Add scroll listener
@@ -128,7 +145,7 @@ const HomePage = ({ showSuggestion }) => {
             clearTimeout(timer);
             window.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    }, [location.state]);
 
     const handleScroll = () => {
         setIsScrolled(window.scrollY > 50);
@@ -256,6 +273,11 @@ const HomePage = ({ showSuggestion }) => {
             case filterOptions.HIGHEST_RATED:
                 filtered.sort((a, b) => b.rating - a.rating);
                 break;
+            case filterOptions.RECOMMENDED:
+                filtered = filtered.filter(restaurant => restaurant.isRecommended);
+                // Optionally, sort recommended items by some criteria, e.g., rating
+                filtered.sort((a, b) => b.rating - a.rating);
+                break;
             default:
                 // Default sorting can be based on some relevance score or just keep original order
                 break;
@@ -266,8 +288,8 @@ const HomePage = ({ showSuggestion }) => {
 
     const handleRestaurantPress = (restaurant) => {
         console.log(`Selected restaurant: ${restaurant.name}`);
-        // Navigate to the restaurant detail screen
-        navigate("/explore");
+        // Navigate to the restaurant detail screen with restaurant data
+        navigate(`/explore`, { state: { restaurant } });
     };
 
     const handleRecommendationClose = () => {
@@ -521,6 +543,18 @@ const HomePage = ({ showSuggestion }) => {
                             >
                                 {filterOptions.HIGHEST_RATED}
                             </button>
+                            <button
+                                className={`filter-button ${
+                                    activeFilter === filterOptions.RECOMMENDED
+                                        ? "active"
+                                        : ""
+                                }`}
+                                onClick={() =>
+                                    setActiveFilter(filterOptions.RECOMMENDED)
+                                }
+                            >
+                                {filterOptions.RECOMMENDED}
+                            </button>
                         </div>
                         {/* Food recommendation popup */}
                         {JSON.parse(
@@ -533,7 +567,7 @@ const HomePage = ({ showSuggestion }) => {
                             )}
                         {/* Restaurant list */}
                         <div className="home-restaurant-list">
-                            {restaurants.map((restaurant) => (
+                            {getFilteredRestaurants().map((restaurant) => (
                                 <div
                                     key={restaurant.id}
                                     className="home-restaurant-card"

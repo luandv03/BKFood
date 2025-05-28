@@ -247,6 +247,25 @@ const ExplorePage = () => {
                     </div>
                 </div>
 
+                {/* Restaurant Reviews Section - Placeholder */}
+                <div className="restaurant-reviews">
+                    <h2>Đánh giá từ khách hàng</h2>
+                    <div className="review-summary">
+                        <FaStar className="star-icon" />
+                        <span>{restaurantDetail.rating} ({restaurantDetail.reviewCount} đánh giá)</span>
+                    </div>
+                    {/* Placeholder for individual reviews - In a real app, map through review data */}
+                    <div className="review-item-placeholder">
+                        <p><strong>Nguyễn Văn A</strong> - <FaStar /><FaStar /><FaStar /><FaStar /><FaStar /></p>
+                        <p>"Món ăn rất ngon, phục vụ nhanh chóng!"</p>
+                    </div>
+                    <div className="review-item-placeholder">
+                        <p><strong>Trần Thị B</strong> - <FaStar /><FaStar /><FaStar /><FaStar /><FaStar className="empty-star"/></p>
+                        <p>"Không gian quán đẹp, đồ ăn tạm ổn."</p>
+                    </div>
+                    <button className="view-all-reviews-btn">Xem tất cả đánh giá</button>
+                </div>
+
                 {/* Featured dishes */}
                 <div className="featured-dishes">
                     <h2>Món nổi bật</h2>
