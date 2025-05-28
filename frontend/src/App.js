@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
     FaCalendarAlt,
     FaCheckCircle,
@@ -7,7 +6,6 @@ import {
     FaMotorcycle,
     FaSpinner,
     FaStore,
-    FaGamepad,
 } from "react-icons/fa";
 import "./OrdersPage.css";
 
@@ -89,11 +87,6 @@ const OrderStatus = ({ status }) => {
 
 const OrdersPage = () => {
     const [activeTab, setActiveTab] = useState("active");
-    const navigate = useNavigate();
-
-    const handlePlayGame = () => {
-        navigate("/game");
-    };
 
     return (
         <div className="orders-page">
@@ -237,18 +230,6 @@ const OrdersPage = () => {
                                         Theo dõi người giao
                                     </button>
                                 </div>
-
-                                <div className="game-action">
-                                    <button
-                                        className="game-button"
-                                        onClick={handlePlayGame}
-                                    >
-                                        <FaGamepad /> Chơi game
-                                    </button>
-                                    <p className="game-info">
-                                        Chơi game trong lúc chờ đơn!
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     ) : (
@@ -260,12 +241,6 @@ const OrdersPage = () => {
                             </p>
                             <button className="primary-button">
                                 Đặt món ngay
-                            </button>
-                            <button
-                                className="game-button-empty"
-                                onClick={handlePlayGame}
-                            >
-                                <FaGamepad /> Chơi game
                             </button>
                         </div>
                     )

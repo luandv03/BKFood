@@ -101,9 +101,9 @@ const HomePage = ({ showSuggestion }) => {
     const [showFilterPopup, setShowFilterPopup] = useState(false);
 
     // States for filter options
-    const [radiusFilter, setRadiusFilter] = useState("< 1km");
-    const [priceFilter, setPriceFilter] = useState("30.000đ - 50.000đ");
-    const [ratingFilter, setRatingFilter] = useState("5 sao");
+    const [radiusFilter, setRadiusFilter] = useState("Không giới hạn");
+    const [priceFilter, setPriceFilter] = useState("Tất cả");
+    const [ratingFilter, setRatingFilter] = useState("Tất cả");
 
     // States to toggle dropdown visibility
     const [showRadiusDropdown, setShowRadiusDropdown] = useState(false);
@@ -117,6 +117,7 @@ const HomePage = ({ showSuggestion }) => {
         "30.000đ - 50.000đ",
         "50.000đ - 100.000đ",
         "> 100.000đ",
+        "Tất cả",
     ];
     const ratingOptions = ["5 sao", "4+ sao", "3+ sao", "Tất cả"];
 
@@ -128,12 +129,16 @@ const HomePage = ({ showSuggestion }) => {
         const timer = setTimeout(() => {
             setIsLoading(false);
             // Show recommendation after a short delay if not coming from recommendation click
-            if (!(location.state && location.state.activeTab === "Recommended")) {
-                const alreadyShown = JSON.parse(
-                    sessionStorage.getItem("foodSuggestionShown")
+            if (
+                !(location.state && location.state.activeTab === "Recommended")
+            ) {
+                const alreadyShown = sessionStorage.getItem(
+                    "foodSuggestionShown"
                 );
-                if (!alreadyShown) {
-                     setShowRecommendation(true);
+                if (alreadyShown === null || alreadyShown === "false") {
+                    setShowRecommendation(true);
+                    // Set the flag to true after showing it once
+                    sessionStorage.setItem("foodSuggestionShown", "true");
                 }
             }
         }, 1500);
@@ -274,7 +279,9 @@ const HomePage = ({ showSuggestion }) => {
                 filtered.sort((a, b) => b.rating - a.rating);
                 break;
             case filterOptions.RECOMMENDED:
-                filtered = filtered.filter(restaurant => restaurant.isRecommended);
+                filtered = filtered.filter(
+                    (restaurant) => restaurant.isRecommended
+                );
                 // Optionally, sort recommended items by some criteria, e.g., rating
                 filtered.sort((a, b) => b.rating - a.rating);
                 break;
@@ -294,14 +301,8 @@ const HomePage = ({ showSuggestion }) => {
 
     const handleRecommendationClose = () => {
         setShowRecommendation(false);
-
-        const alreadyShown = JSON.parse(
-            sessionStorage.getItem("foodSuggestionShown")
-        );
-
-        if (alreadyShown) {
-            sessionStorage.setItem("foodSuggestionShown", false);
-        }
+        // Update session storage to remember that the recommendation has been shown
+        sessionStorage.setItem("foodSuggestionShown", "true");
     };
 
     const toggleFilterPopup = () => {
@@ -557,14 +558,11 @@ const HomePage = ({ showSuggestion }) => {
                             </button>
                         </div>
                         {/* Food recommendation popup */}
-                        {JSON.parse(
-                            sessionStorage.getItem("foodSuggestionShown")
-                        ) &&
-                            showRecommendation && (
-                                <FoodRecommendation
-                                    onClose={handleRecommendationClose}
-                                />
-                            )}
+                        {showRecommendation && (
+                            <FoodRecommendation
+                                onClose={handleRecommendationClose}
+                            />
+                        )}
                         {/* Restaurant list */}
                         <div className="home-restaurant-list">
                             {getFilteredRestaurants().map((restaurant) => (
