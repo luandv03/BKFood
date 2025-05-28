@@ -54,9 +54,9 @@ const activeOrder = {
     currentStep: 2,
     steps: [
         { id: 1, title: "Đã đặt hàng", time: "13:55", completed: true },
-        { id: 2, title: "Đang chuẩn bị", time: "14:05", completed: true },
-        { id: 3, title: "Đang giao hàng", time: "", completed: false },
-        { id: 4, title: "Đã giao hàng", time: "", completed: false },
+        { id: 2, title: "Đã xác nhận", time: "14:05", completed: true },
+        { id: 3, title: "Đang chuẩn bị", time: "", completed: false },
+        { id: 4, title: "Đã hoàn thành", time: "", completed: false },
     ],
     estimatedArrival: "14:45",
 };
@@ -68,9 +68,9 @@ const OrderStatus = ({ status }) => {
             case "processing":
                 return { color: "#2196F3", text: "Đang xử lý" };
             case "delivering":
-                return { color: "#FF9800", text: "Đang giao hàng" };
+                return { color: "#FF9800", text: "Đang chuẩn bị" };
             case "delivered":
-                return { color: "#4CAF50", text: "Đã giao hàng" };
+                return { color: "#4CAF50", text: "Đã hoàn thành" };
             case "cancelled":
                 return { color: "#F44336", text: "Đã hủy" };
             default:
@@ -147,7 +147,9 @@ const OrdersPage = () => {
                                     <div className="time-info">
                                         <FaCalendarAlt className="info-icon" />
                                         <div>
-                                            <h3>Thời gian giao hàng dự kiến</h3>
+                                            <h3>
+                                                Thời gian hoàn thành dự kiến
+                                            </h3>
                                             <p>
                                                 {activeOrder.estimatedArrival}
                                             </p>
@@ -229,14 +231,14 @@ const OrdersPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="order-actions">
+                                {/* <div className="order-actions">
                                     <button className="secondary-button">
                                         Liên hệ nhà hàng
                                     </button>
                                     <button className="primary-button">
                                         Theo dõi người giao
                                     </button>
-                                </div>
+                                </div> */}
 
                                 <div className="game-action">
                                     <button

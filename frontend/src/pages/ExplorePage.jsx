@@ -10,10 +10,10 @@ import {
     FaStar,
     FaUsers,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./ExplorePage.css";
-import ReviewForm from '../components/ReviewForm';
-import ReviewList from '../components/ReviewList';
+import ReviewList from "../components/ReviewList";
+import ReviewForm from "../components/ReviewForm";
 
 // Sample restaurant data
 const restaurantDetail = {
@@ -71,6 +71,7 @@ const restaurantDetail = {
 
 const ExplorePage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [showOrderForm, setShowOrderForm] = useState(false);
@@ -80,25 +81,43 @@ const ExplorePage = () => {
     const [reviews, setReviews] = useState([
         {
             id: 1,
-            userName: "Nguyễn Văn A",
-            userAvatar: "https://via.placeholder.com/40",
+            userName: "Nguyễn Gia Tùng Dương",
+            userAvatar:
+                "https://schooler.sun-asterisk.com/storage/images/avatar/student/66fe0da9a5d64.",
             rating: 5,
             date: "20/05/2025",
             comment: "Món ăn rất ngon, phục vụ nhanh chóng!",
             images: [
                 "https://images.unsplash.com/photo-1503764654157-72d979d9af2f",
-                "https://images.unsplash.com/photo-1555126634-323283e090fa"
-            ]
+                "https://images.unsplash.com/photo-1555126634-323283e090fa",
+            ],
         },
         {
             id: 2,
-            userName: "Trần Thị B",
-            userAvatar: "https://via.placeholder.com/40",
+            userName: "Dương Văn Giới",
+            userAvatar:
+                "https://schooler.sun-asterisk.com/storage/images/avatar/student/62fe68d66953c.",
             rating: 4,
             date: "19/05/2025",
-            comment: "Không gian quán đẹp, đồ ăn tạm ổn."
-        }
+            comment: "Không gian quán đẹp, đồ ăn tạm ổn.",
+        },
     ]);
+
+    // Check if we should open review form from return navigation
+    useEffect(() => {
+        if (location.state && location.state.openReviewForm) {
+            setShowReviewForm(true);
+            // Clear the state to avoid reopening on future navigations
+            window.history.replaceState({}, document.title);
+        }
+
+        // Update reviews if we have received updated reviews from ReviewsPage
+        if (location.state && location.state.updatedReviews) {
+            setReviews(location.state.updatedReviews);
+            // Clear the state after using it
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     useEffect(() => {
         function handleScroll() {
@@ -166,11 +185,54 @@ const ExplorePage = () => {
             id: reviews.length + 1,
             userName: "Người dùng",
             userAvatar: "https://via.placeholder.com/40",
-            date: new Date().toLocaleDateString('vi-VN'),
-            ...newReview
+            date: new Date().toLocaleDateString("vi-VN"),
+            ...newReview,
         };
         setReviews([reviewToAdd, ...reviews]);
         setShowReviewForm(false);
+
+        // Show success notification or toast
+        alert("Đánh giá của bạn đã được gửi thành công!");
+    };
+
+    const handleOrderButtonClick = () => {
+        // Calculate the total price
+        let totalPrice = 0;
+        const cartItems = restaurantDetail.featuredDishes
+            .filter((dish) => selectedQuantities[dish.id] > 0)
+            .map((dish) => {
+                const quantity = selectedQuantities[dish.id];
+                const price = parseInt(dish.price.replace(/[^\d]/g, ""));
+                const itemTotal = price * quantity;
+                totalPrice += itemTotal;
+
+                return {
+                    id: dish.id,
+                    imageUrl: dish.imageUrl,
+                    name: dish.name,
+                    price: dish.price,
+                    quantity,
+                    totalPrice: `${itemTotal.toLocaleString()}₫`,
+                };
+            });
+
+        // Format the total price with comma separator and currency symbol
+        const formattedTotalPrice = `${totalPrice.toLocaleString()}₫`;
+
+        // Navigate to the order confirmation page with the order data
+        setShowOrderForm(false);
+        navigate("/order-confirmation", {
+            state: {
+                restaurant: {
+                    id: restaurantDetail.id,
+                    name: restaurantDetail.name,
+                    address: restaurantDetail.address,
+                    imageUrl: restaurantDetail.imageUrl,
+                },
+                cartItems,
+                totalPrice: formattedTotalPrice,
+            },
+        });
     };
 
     return (
@@ -288,13 +350,30 @@ const ExplorePage = () => {
                 <div className="restaurant-reviews">
                     <div className="reviews-header">
                         <h2>Đánh giá từ khách hàng</h2>
-                        <div className="review-summary">
+                        <div
+                            className="review-summary"
+                            onClick={() =>
+                                navigate("/reviews", {
+                                    state: {
+                                        restaurantName: restaurantDetail.name,
+                                        rating: restaurantDetail.rating,
+                                        reviewCount:
+                                            restaurantDetail.reviewCount,
+                                        reviews: reviews,
+                                    },
+                                })
+                            }
+                        >
                             <FaStar className="star-icon" />
-                            <span>{restaurantDetail.rating} ({restaurantDetail.reviewCount} đánh giá)</span>
+                            <span>
+                                {restaurantDetail.rating} (
+                                {restaurantDetail.reviewCount} đánh giá)
+                            </span>
+                            <span className="see-all">Xem tất cả</span>
                         </div>
                     </div>
-                    
-                    <button 
+
+                    <button
                         className="write-review-btn"
                         onClick={() => setShowReviewForm(true)}
                     >
@@ -302,15 +381,24 @@ const ExplorePage = () => {
                     </button>
 
                     {showReviewForm && (
-                        <div className="review-form-overlay">
-                            <ReviewForm 
-                                onSubmit={handleReviewSubmit}
-                                onClose={() => setShowReviewForm(false)}
-                            />
+                        <div
+                            className="review-form-overlay"
+                            onClick={() => setShowReviewForm(false)}
+                        >
+                            <div
+                                className="review-form-modal"
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ marginBottom: "80px" }} // Add extra margin at the bottom
+                            >
+                                <ReviewForm
+                                    onSubmit={handleReviewSubmit}
+                                    onClose={() => setShowReviewForm(false)}
+                                />
+                            </div>
                         </div>
                     )}
 
-                    <ReviewList reviews={reviews} />
+                    <ReviewList reviews={reviews.slice(0, 2)} />
                 </div>
 
                 {/* Featured dishes */}
@@ -473,10 +561,7 @@ const ExplorePage = () => {
                             </button>
                             <button
                                 className="order-btn"
-                                onClick={() => {
-                                    setShowOrderForm(false);
-                                    navigate("/orders");
-                                }}
+                                onClick={handleOrderButtonClick}
                             >
                                 Đặt hàng
                             </button>

@@ -1,117 +1,181 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./OrderConfirmationPage.css"; // We'll create this CSS file later
-import { FaClock, FaStore, FaShoppingBag } from "react-icons/fa";
+import { FaChevronLeft, FaClock } from "react-icons/fa";
+import "./OrderConfirmationPage.css";
 
 const OrderConfirmationPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { restaurant, cartItems, totalPrice } = location.state || {}; // Get data passed from previous page
+    const { restaurant, cartItems, totalPrice } = location.state || {
+        restaurant: { name: "Bún Chả 52 Tạ Hiện" },
+        cartItems: [
+            {
+                name: "Bún chả đặc biệt",
+                price: "60,000₫",
+                quantity: 1,
+                totalPrice: "60,000₫",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba",
+            },
+            {
+                name: "Bún chả đầy đủ",
+                price: "40,000₫",
+                quantity: 1,
+                totalPrice: "40,000₫",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba",
+            },
+            {
+                name: "Bún bò huế",
+                price: "60,000₫",
+                quantity: 1,
+                totalPrice: "60,000₫",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1553701879-4aa576804f65",
+            },
+        ],
+        totalPrice: "160,000₫",
+    };
 
-    const [dataReady, setDataReady] = useState(false); // New state
+    // For the delivery option selection
+    const [deliveryLocation, setDeliveryLocation] = useState("location");
 
-    const [deliveryTime, setDeliveryTime] = useState("ASAP");
-    const [orderType, setOrderType] = useState("delivery"); // 'delivery' or 'pickup'
+    const handleBack = () => {
+        navigate(-1);
+    };
 
-    // Sample available time slots (in a real app, this would come from the backend)
-    const timeSlots = ["ASAP", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM"];
-
-    useEffect(() => {
-        if (!restaurant || !cartItems || totalPrice === undefined) {
-            // If data is missing, navigate away.
-            navigate('/');
-        } else {
-            setDataReady(true); // Mark data as ready for rendering
-        }
-    }, [restaurant, cartItems, totalPrice, navigate]); // Effect dependencies
-
-    if (!dataReady) {
-        // Show loading message or spinner until data is validated and ready
-        return <p>Đang tải thông tin đơn hàng...</p>;
-    }
-
-    const handleConfirmOrder = () => {
-        // Logic to place the order
-        console.log("Order confirmed:", {
-            restaurant,
-            cartItems,
-            totalPrice,
-            deliveryTime,
-            orderType,
-        });
-        // Navigate to order tracking page (assuming it exists)
+    const handleOrderSubmit = () => {
+        // Process the order
         navigate("/orders", { state: { orderJustPlaced: true } });
     };
 
+    // Calculate total without additional fees
+    const subtotal = cartItems.reduce((sum, item) => {
+        const price = parseInt(item.totalPrice.replace(/[^\d]/g, ""));
+        return sum + price;
+    }, 0);
+
+    // Additional fee
+    const additionalFee = 10000;
+
+    // Calculate final total
+    const finalTotal = subtotal + additionalFee;
+
     return (
         <div className="order-confirmation-page">
-            <header className="confirmation-header">
+            <header className="order-confirmation-header">
+                <button className="back-button" onClick={handleBack}>
+                    <FaChevronLeft />
+                </button>
                 <h1>Xác nhận đơn hàng</h1>
             </header>
 
-            <div className="order-summary-card">
-                <h2>{restaurant.name}</h2>
-                <div className="cart-items-summary">
+            <div className="order-confirmation-content">
+                {/* Order now section */}
+                <section className="order-now-section">
+                    <div className="order-now-header">
+                        <div className="clock-icon-container">
+                            <FaClock className="clock-icon" />
+                        </div>
+                        <div className="order-now-info">
+                            <h3>Đặt món ngay</h3>
+                            <p>Lên món đến nhanh có thể</p>
+                        </div>
+                    </div>
+                    <div className="header-time">Hẹn giờ</div>
+                </section>
+
+                {/* Restaurant and order items section */}
+                <section className="restaurant-items-section">
+                    <h3>{restaurant.name}</h3>
+
                     {cartItems.map((item, index) => (
-                        <div key={index} className="cart-item-entry">
-                            <span>{item.quantity}x {item.name}</span>
-                            <span>{item.price}</span>
+                        <div className="order-item" key={index}>
+                            <div className="item-image-container">
+                                <img
+                                    src={item.imageUrl}
+                                    alt={item.name}
+                                    className="item-image"
+                                />
+                            </div>
+                            <div className="item-details">
+                                <div className="item-name-row">
+                                    <h4>{item.name}</h4>
+                                    {/* <span className="item-price">
+                                        {item.price}
+                                    </span> */}
+                                </div>
+                                <div className="item-quantity-row">
+                                    <span>Số lượng: {item.quantity}</span>
+                                    <span>{item.totalPrice}</span>
+                                </div>
+                            </div>
                         </div>
                     ))}
-                </div>
-                <div className="total-price-summary">
-                    <strong>Tổng cộng:</strong>
-                    <strong>{totalPrice}</strong>
-                </div>
-            </div>
+                </section>
 
-            <div className="order-options-card">
-                <div className="option-group">
-                    <h3><FaClock /> Chọn giờ giao hàng</h3>
-                    <select 
-                        value={deliveryTime} 
-                        onChange={(e) => setDeliveryTime(e.target.value)}
-                        className="time-select"
-                    >
-                        {timeSlots.map(time => (
-                            <option key={time} value={time}>{time}</option>
-                        ))}
-                    </select>
-                </div>
+                {/* Delivery method section */}
+                <section className="delivery-method-section">
+                    <h3>Hình thức nhận đơn hàng</h3>
 
-                <div className="option-group">
-                    <h3><FaShoppingBag /> Hình thức nhận hàng</h3>
-                    <div className="order-type-selection">
-                        <button 
-                            className={`type-button ${
-                                orderType === "delivery" ? "active" : ""
-                            }`}
-                            onClick={() => setOrderType("delivery")}
-                        >
-                            Giao tận nơi
-                        </button>
-                        <button 
-                            className={`type-button ${
-                                orderType === "pickup" ? "active" : ""
-                            }`}
-                            onClick={() => setOrderType("pickup")}
-                        >
-                           <FaStore /> Lấy tại quán
-                        </button>
+                    <div className="delivery-options">
+                        <div className="delivery-option">
+                            <input
+                                type="radio"
+                                id="location"
+                                name="deliveryMethod"
+                                checked={deliveryLocation === "location"}
+                                onChange={() => setDeliveryLocation("location")}
+                            />
+                            <label htmlFor="location">Dùng tại quán</label>
+                        </div>
+
+                        <div className="delivery-option">
+                            <input
+                                type="radio"
+                                id="pickup"
+                                name="deliveryMethod"
+                                checked={deliveryLocation === "pickup"}
+                                onChange={() => setDeliveryLocation("pickup")}
+                            />
+                            <label htmlFor="pickup">Mang đi</label>
+                        </div>
                     </div>
-                </div>
+                </section>
+
+                {/* Payment details section */}
+                <section className="payment-details-section">
+                    <h3>Chi tiết thanh toán</h3>
+
+                    <div className="payment-item">
+                        <span>Tạm tính ({cartItems.length} món)</span>
+                        <span>{subtotal.toLocaleString()}đ</span>
+                    </div>
+
+                    <div className="payment-item">
+                        <span>Phí áp dụng</span>
+                        <span>{additionalFee.toLocaleString()}đ</span>
+                    </div>
+
+                    <div className="total-amount">
+                        <span>Tổng số tiền</span>
+                        <span className="final-price">
+                            {finalTotal.toLocaleString()}đ
+                        </span>
+                    </div>
+                </section>
             </div>
 
-            <div className="confirmation-actions">
-                <button className="confirm-button" onClick={handleConfirmOrder}>
-                    Xác nhận đặt hàng
-                </button>
-                <button className="cancel-button" onClick={() => navigate(-1)}>
-                    Quay lại
+            <div className="order-confirmation-footer">
+                <button
+                    className="submit-order-button"
+                    onClick={handleOrderSubmit}
+                >
+                    Gửi yêu cầu
                 </button>
             </div>
         </div>
     );
 };
 
-export default OrderConfirmationPage; 
+export default OrderConfirmationPage;

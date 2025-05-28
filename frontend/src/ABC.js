@@ -8,6 +8,8 @@ import {
     FaStore,
 } from "react-icons/fa";
 import "./OrdersPage.css";
+import ReviewsPage from './pages/ReviewsPage';
+import { Routes, Route } from 'react-router-dom';
 
 // Dữ liệu đơn hàng mẫu
 const orderHistory = [

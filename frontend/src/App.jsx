@@ -12,6 +12,7 @@ import OrdersPage from "./pages/OrdersPage";
 import ProfilePage from "./pages/ProfilePage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import GamePage from "./pages/GamePage";
+import ReviewsPage from "./pages/ReviewsPage";
 
 function App() {
     useEffect(() => {
@@ -38,6 +39,7 @@ function App() {
                         element={<OrderConfirmationPage />}
                     />
                     <Route path="game" element={<GamePage />} />
+                    <Route path="reviews" element={<ReviewsPage />} />
 
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>

@@ -1,27 +1,22 @@
 .review-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
 }
 
 .review-item {
-    background-color: white;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .review-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
 .reviewer-info {
     display: flex;
     align-items: center;
-    gap: 12px;
 }
 
 .reviewer-avatar {
@@ -29,49 +24,51 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    margin-right: 10px;
 }
 
 .reviewer-details h4 {
     margin: 0;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: 600;
     color: #333;
 }
 
 .review-date {
     font-size: 12px;
-    color: #666;
+    color: #777;
     margin-top: 2px;
 }
 
 .review-rating {
     display: flex;
-    gap: 2px;
+    margin-bottom: 8px;
 }
 
-.review-rating .star {
-    font-size: 14px;
+.star {
+    margin-right: 2px;
 }
 
 .review-comment {
-    margin: 0;
+    margin: 0 0 10px 0;
     font-size: 14px;
-    line-height: 1.5;
-    color: #444;
+    line-height: 1.4;
+    color: #333;
 }
 
 .review-images {
     display: flex;
-    gap: 8px;
-    margin-top: 12px;
     overflow-x: auto;
-    padding-bottom: 8px;
+    gap: 8px;
+    padding-bottom: 5px;
 }
 
 .review-image {
     width: 80px;
     height: 80px;
-    object-fit: cover;
     border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 /* Custom scrollbar for review images */
@@ -91,4 +88,4 @@
 
 .review-images::-webkit-scrollbar-thumb:hover {
     background: #666;
-} 
+}
