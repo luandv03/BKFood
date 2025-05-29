@@ -9,7 +9,7 @@ const GamePage = () => {
     const [gameStarted, setGameStarted] = useState(false);
     const [countdown, setCountdown] = useState(5);
     const [gameInfo, setGameInfo] = useState({
-        remainingTime: 300, // 5 minutes in seconds
+        remainingTime: 3000, // 5 minutes in seconds
         reward: "Món ăn đặc biệt",
         points: 0,
     });
@@ -17,6 +17,7 @@ const GamePage = () => {
     const [showPointsPopup, setShowPointsPopup] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showContinuePopup, setShowContinuePopup] = useState(false);
+    const [showOrderDonePopup, setShowOrderDonePopup] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
 
@@ -44,12 +45,19 @@ const GamePage = () => {
                 }));
             }, 1000);
 
+            // Check order timeout and game over
             if (gameInfo.remainingTime <= 0) {
                 clearInterval(timer);
-                // Handle game over due to time
-                alert(
-                    "Hết thời gian! Bạn đã đạt " + gameInfo.points + " điểm."
-                );
+
+                // if (gameOver) {
+                //     // Handle game over due to time
+                //     // alert(
+                //     //     "Hết thời gian! Bạn đã đạt " +
+                //     //         gameInfo.points +
+                //     //         " điểm."
+                //     // );
+                //     setShowOrderDonePopup(true);
+                // }
             }
 
             return () => clearInterval(timer);
@@ -305,8 +313,13 @@ const GamePage = () => {
 
         setTimeout(() => {
             setShowSuccessPopup(false);
-            // Ask if they want to continue playing
-            setShowContinuePopup(true);
+
+            if (gameInfo.remainingTime <= 0) {
+                setShowOrderDonePopup(true);
+            } else {
+                // If time is still remaining, show continue playing prompt
+                setShowContinuePopup(true);
+            }
         }, 2000);
     };
 
@@ -330,7 +343,7 @@ const GamePage = () => {
     const handleQuitGame = () => {
         setShowContinuePopup(false);
         // Return to previous screen
-        navigate(-1);
+        // navigate(-1);
     };
 
     const formatTime = (seconds) => {
@@ -432,6 +445,30 @@ const GamePage = () => {
                                 onClick={handleContinuePlaying}
                             >
                                 <FaCheck /> Có
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Order Done Popup */}
+            {showOrderDonePopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h2>Món ăn đã hoàn thành!</h2>
+                        <p>
+                            Nhà hàng đã chuẩn bị xong món ăn cho bạn, hãy tới
+                            thưởng thức ngay thôi nào.
+                        </p>
+                        <div className="popup-actions">
+                            <button
+                                className="popup-button confirm"
+                                onClick={() => {
+                                    setShowOrderDonePopup(false);
+                                    navigate(-1); // Navigate back to previous screen
+                                }}
+                            >
+                                <FaCheck /> Thoát
                             </button>
                         </div>
                     </div>
