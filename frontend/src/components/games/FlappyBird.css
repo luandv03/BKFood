@@ -1,0 +1,135 @@
+.flappy-bird {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    position: relative;
+}
+
+.flappy-countdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 10;
+}
+
+.flappy-countdown h2 {
+    font-size: 72px;
+    margin: 0;
+}
+
+.flappy-countdown p {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.flappy-score-display {
+    background: white;
+    padding: 15px;
+    margin: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flappy-score-display .score-label {
+    color: #666;
+    font-size: 16px;
+}
+
+.flappy-score-display .score-value {
+    background: #ff9800;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.flappy-instructions {
+    background: white;
+    padding: 12px 15px;
+    margin: 0 15px 15px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.flappy-instructions p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
+
+.flappy-container {
+    flex: 1;
+    margin: 0 15px 15px 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.flappy-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.flappy-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.flappy-message {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.flappy-message h2 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.flappy-message p {
+    margin: 15px 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.flappy-message button {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+
+.flappy-message button:hover {
+    background: #f57c00;
+} 
