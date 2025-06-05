@@ -34,7 +34,7 @@ const ExplorePage = () => {
         const fetchRestaurantData = () => {
             // Get restaurantId from URL params or location state
             const restaurantId =
-                id || (location.state && location.state.restaurantId);
+                id || (location.state && location.state.restaurantId) || "1";
 
             if (!restaurantId) {
                 console.error("No restaurant ID provided");
