@@ -12,8 +12,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import FoodRecommendation from "../components/FoodRecommendation";
 import "./HomePage.css";
 
-// Sample restaurant data
-const restaurants = [
+// Sample restaurant data with reviews added
+const initialRestaurants = [
     {
         id: "1",
         name: "Phở Hà Nội",
@@ -26,6 +26,70 @@ const restaurants = [
             "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1174&q=80",
         isBusy: true,
         isRecommended: true,
+        images: [
+            "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1174&q=80",
+            "https://images.unsplash.com/photo-1555126634-323283e090fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
+            "https://images.unsplash.com/photo-1576749872435-ff88a71c1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
+        ],
+        about: "Được thành lập vào năm 2010, Phở Hà Nội phục vụ ẩm thực Việt Nam truyền thống cho khách hàng tại Hà Nội. Chuyên môn của chúng tôi là phở bò truyền thống được nấu với nước dùng đậm đà được ninh trong hơn 8 giờ với các loại thảo mộc và gia vị.",
+        reviewCount: 128,
+        hygieneRating: 4.5,
+        seatingAvailability: "Tốt",
+        featuredDishes: [
+            {
+                id: "1",
+                name: "Phở Bò Đặc Biệt",
+                price: "65,000₫",
+                description:
+                    "Phở bò đặc biệt với các loại thịt bò cao cấp và nước dùng đậm đà",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+                isPopular: true,
+            },
+            {
+                id: "2",
+                name: "Bún Chả",
+                price: "55,000₫",
+                description:
+                    "Bún chả với thịt lợn nướng than hoa, ăn kèm với bún, rau sống và nước mắm chua ngọt",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                isPopular: true,
+            },
+            {
+                id: "3",
+                name: "Gỏi Cuốn",
+                price: "45,000₫",
+                description:
+                    "Gỏi cuốn tôm thịt, cuốn với rau xanh, giá, bún và ăn với nước mắm pha",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1553701879-4aa576804f65?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+            },
+        ],
+        reviews: [
+            {
+                id: 1,
+                userName: "Nguyễn Văn A",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66fe0da9a5d64.",
+                rating: 5,
+                date: "20/05/2025",
+                comment: "Món ăn rất ngon, phục vụ nhanh chóng!",
+                images: [
+                    "https://images.unsplash.com/photo-1503764654157-72d979d9af2f",
+                    "https://images.unsplash.com/photo-1555126634-323283e090fa",
+                ],
+            },
+            {
+                id: 2,
+                userName: "Trần Thị B",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/62fe68d66953c.",
+                rating: 4,
+                date: "19/05/2025",
+                comment: "Không gian quán đẹp, đồ ăn tạm ổn.",
+            },
+        ],
     },
     {
         id: "2",
@@ -39,46 +103,332 @@ const restaurants = [
             "https://images.unsplash.com/photo-1552611052-33e04de081de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
         isBusy: false,
         isRecommended: false,
+        images: [
+            "https://images.unsplash.com/photo-1552611052-33e04de081de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+            "https://images.unsplash.com/photo-1570275239925-4af0aa93a0dc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+        ],
+        about: "Bún Chả Hương Liên nổi tiếng với món bún chả thơm ngon đậm đà. Nhà hàng trở nên nổi tiếng hơn sau khi đón tiếp cựu Tổng thống Obama vào năm 2016.",
+        reviewCount: 156,
+        hygieneRating: 4.3,
+        seatingAvailability: "Tốt",
+        featuredDishes: [
+            {
+                id: "1",
+                name: "Bún Chả",
+                price: "55,000₫",
+                description:
+                    "Bún chả truyền thống Hà Nội với thịt nướng than hoa",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                isPopular: true,
+            },
+            {
+                id: "2",
+                name: "Nem Rán",
+                price: "45,000₫",
+                description: "Nem rán giòn thơm với nhân thịt và nấm",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1514326005837-fb4791d25e03?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                isPopular: true,
+            },
+        ],
+        reviews: [
+            {
+                id: 1,
+                userName: "Lê Văn C",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66fe0da9a5d64.",
+                rating: 5,
+                date: "15/05/2025",
+                comment: "Bún chả ngon nhất Hà Nội, đúng vị truyền thống.",
+            },
+            {
+                id: 2,
+                userName: "Phạm Thị D",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/62fe68d66953c.",
+                rating: 4,
+                date: "12/05/2025",
+                comment:
+                    "Quán đông khách, phải đợi hơi lâu nhưng đồ ăn rất ngon.",
+                images: [
+                    "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba",
+                ],
+            },
+        ],
     },
     {
         id: "3",
-        name: "Cơm Tấm Sài Gòn",
-        rating: 4.3,
-        address: "56 Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
-        distance: "0.4",
+        name: "Bánh Mì Bà Lan",
+        rating: 4.6,
+        address: "26 Lê Lợi, Quận 1, TP. Hồ Chí Minh",
+        distance: "1.2",
         openingHours: "6 AM - 10 PM",
-        price: "35,000 - 60,000₫",
+        price: "20,000 - 35,000₫",
         imageUrl:
-            "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-        isBusy: true,
+            "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npHQ5jGoPVDWWvsFg21Ww0f8HM7lfXKDzUxg8sukf_iVpy6IUYftj_0vQ4-MFKkcyZVBLSaXlb1JA0jzsdoYFxTT101x0WVHrO3R3oXUz0EoBAwwPSBaXdkF-HejCWbGUROf7EHgw=w103-h103-n-k-no",
+        isBusy: false,
         isRecommended: true,
+        images: [
+            "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npHQ5jGoPVDWWvsFg21Ww0f8HM7lfXKDzUxg8sukf_iVpy6IUYftj_0vQ4-MFKkcyZVBLSaXlb1JA0jzsdoYFxTT101x0WVHrO3R3oXUz0EoBAwwPSBaXdkF-HejCWbGUROf7EHgw=w103-h103-n-k-no",
+            "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+            "https://images.unsplash.com/photo-1590080877034-13d4bd327f0d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+        ],
+        about: "Ra đời từ năm 1985, Bánh Mì Bà Lan là một biểu tượng ẩm thực đường phố Sài Gòn. Với công thức nước sốt gia truyền và nguyên liệu tươi ngon, chúng tôi phục vụ hàng trăm ổ bánh mì mỗi ngày cho người dân địa phương và du khách.",
+        reviewCount: 210,
+        hygieneRating: 4.4,
+        seatingAvailability: "Hạn chế",
+        featuredDishes: [
+            {
+                id: "1",
+                name: "Bánh Mì Thịt Nguội",
+                price: "30,000₫",
+                description:
+                    "Bánh mì giòn thơm kẹp thịt nguội, dưa leo, pate và nước sốt đặc biệt",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                isPopular: true,
+            },
+            {
+                id: "2",
+                name: "Bánh Mì Trứng Ốp La",
+                price: "25,000₫",
+                description:
+                    "Ổ bánh mì truyền thống với trứng ốp la và pate nóng hổi",
+                imageUrl:
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4noq0Xv-qN6aIW0GjEOIVzoS9Y_WQy2-RdrYKzFRudvfG-uhSKnB9IV5a-EieT3Q3S7qmAbgo44mXuLbY4QJR-ZBBb-SbNbsm9vOPPhXOghZf9h4JMxLqlUdOMuJ-IuPog6YTDZ_wLdt6DUT=s680-w680-h510-rw",
+            },
+        ],
+        reviews: [
+            {
+                id: 1,
+                userName: "Ngô Thị E",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/62fe68d66953c.",
+                rating: 5,
+                date: "10/05/2025",
+                comment: "Bánh mì giòn rụm, nước sốt ngon tuyệt vời!",
+                images: [
+                    "https://images.unsplash.com/photo-1550547660-d9450f859349",
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4noq0Xv-qN6aIW0GjEOIVzoS9Y_WQy2-RdrYKzFRudvfG-uhSKnB9IV5a-EieT3Q3S7qmAbgo44mXuLbY4QJR-ZBBb-SbNbsm9vOPPhXOghZf9h4JMxLqlUdOMuJ-IuPog6YTDZ_wLdt6DUT=s680-w680-h510-rw",
+                ],
+            },
+            {
+                id: 2,
+                userName: "Phạm Văn F",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66fe0da9a5d64.",
+                rating: 4,
+                date: "08/05/2025",
+                comment: "Ổ bánh hơi nhỏ nhưng vị ngon không chê vào đâu được.",
+            },
+        ],
     },
     {
         id: "4",
-        name: "Bánh Mì Pate",
+        name: "Cơm Tấm Sài Gòn",
         rating: 4.7,
-        address: "35 Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+        address: "45 Nguyễn Huệ, Quận 1, TP.HCM",
         distance: "0.3",
-        openingHours: "6 AM - 7 PM",
-        price: "25,000 - 40,000₫",
+        openingHours: "6 AM - 10 PM",
+        price: "35,000 - 70,000₫",
         imageUrl:
-            "https://images.unsplash.com/photo-1600688640154-9619e002df30?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+            "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npzPophbFb41yNYfnqNrMgTYEp0qLb5fzV2bWVM-RnLITqmzDIva8kKiP97o9mVpvnMf2_es5XBt7z9s2_4SQkCszESJQtPG-7NQYyzRIIl-JGH5kYHlj-3BWhcL2CHWKvbRoud=w83-h83-n-k-no",
         isBusy: false,
-        isRecommended: false,
+        isRecommended: true,
+        images: [
+            "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npzPophbFb41yNYfnqNrMgTYEp0qLb5fzV2bWVM-RnLITqmzDIva8kKiP97o9mVpvnMf2_es5XBt7z9s2_4SQkCszESJQtPG-7NQYyzRIIl-JGH5kYHlj-3BWhcL2CHWKvbRoud=w83-h83-n-k-no",
+            "https://images.unsplash.com/photo-1625601171837-9f1372214b6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+            "https://images.unsplash.com/photo-1571167111898-b8b17a16286b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+        ],
+        about: "Cơm Tấm Sài Gòn mang hương vị miền Nam đích thực với sườn nướng, bì, chả được chế biến theo công thức truyền thống. Không gian sạch sẽ, phục vụ nhanh nhẹn và thân thiện.",
+        reviewCount: 102,
+        hygieneRating: 4.6,
+        seatingAvailability: "Tốt",
+        featuredDishes: [
+            {
+                id: "1",
+                name: "Cơm Tấm Sườn Bì Chả",
+                price: "65,000₫",
+                description:
+                    "Cơm tấm ăn kèm sườn nướng, bì, chả và mỡ hành thơm ngon",
+                imageUrl:
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nppBQ7smxxkg14dD5jI7LJlRGnpfYEuIP4gOxsyuklnHgQXWoZDU158ORc_3EWjXIjbhnieu1hYTLrJJhdlVnlhUrAM-bRz0lTtSXkfFVu6R4rCRxlsvTSSu3mz6HGXWNviOvHy=w234-h157-n-k-no",
+                isPopular: true,
+            },
+            {
+                id: "2",
+                name: "Trứng Ốp La",
+                price: "10,000₫",
+                description:
+                    "Trứng ốp la lòng đào, ăn kèm với cơm tấm và nước mắm pha",
+                imageUrl:
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npmcodtxz_FT3txOv4CwaepninHHtEEo6YM4wiCNxBCEjv590UdNLyJZq4bgmnDycLMYYgZ8G5ZNgZekwSlNsW3bSIIm0QAfpcZ3OCazdRNgZqX5BImstNLt7O9GpT7g_eb5A-9=s680-w680-h510-rw",
+            },
+        ],
+        reviews: [
+            {
+                id: 1,
+                userName: "Đỗ Minh Khoa",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66fe0da9a5d64.",
+                rating: 5,
+                date: "18/05/2025",
+                comment: "Cơm mềm, sườn ướp đậm đà. Nước mắm tuyệt vời luôn!",
+                images: [
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npmcodtxz_FT3txOv4CwaepninHHtEEo6YM4wiCNxBCEjv590UdNLyJZq4bgmnDycLMYYgZ8G5ZNgZekwSlNsW3bSIIm0QAfpcZ3OCazdRNgZqX5BImstNLt7O9GpT7g_eb5A-9=s680-w680-h510-rw",
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrdId0Q24E2zJzQY47mUzNAVg52MUZqfPIL3gJprLOltZqCuykNwQwnu1VQ0lUBFenk1s8R951ud5eEnAlTAN3AHJe1WGIOFnFattRyPbYRfcgqcyDxCejRsd63_Ub-mKtnmc4e=s680-w680-h510-rw",
+                ],
+            },
+            {
+                id: 2,
+                userName: "Ngô Thanh Hà",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/62fe68d66953c.",
+                rating: 4,
+                date: "16/05/2025",
+                comment: "Quán sạch sẽ, nhân viên nhiệt tình. Giá hợp lý.",
+            },
+        ],
     },
     {
         id: "5",
-        name: "Bún Đậu Mắm Tôm",
-        rating: 4.4,
-        address: "78 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
-        distance: "0.6",
-        openingHours: "10 AM - 9 PM",
-        price: "50,000 - 95,000₫",
+        name: "Phở Thìn Hà Nội",
+        rating: 4.8,
+        address: "13 Lò Đúc, Hai Bà Trưng, Hà Nội",
+        distance: "0.7",
+        openingHours: "5 AM - 9 PM",
+        price: "40,000 - 70,000₫",
         imageUrl:
-            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
+            "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrv-FAABsVjWLWP5xmotNgTXqyyA_xz6Q_SUG4LoaXQIsvtvZmAe7PvFWSHCYqjvlwhawpEP6SPaH0rB8qj9eDUE00t8bCyTwr2IwZrQtwRaCsGNJnzbFr_4ODL3nQqyv4Youw0rA=w103-h103-n-k-no",
         isBusy: true,
         isRecommended: true,
+        images: [
+            "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqtO2tytzHhjH8fT77l2EOAFs2BIK4TVlyWDIL9E_TSQlJSuxL-jEiusoFLWyMJP2uaBk6JcpctimAz14f-dep3Rt2LSJalCDYLXmmeSmowSnt7sU9xjFuXFVkxu71NBKAFPpGk9PGzy-2_=s680-w680-h510-rw",
+            "https://images.unsplash.com/photo-1617196037301-1685b94f7e7e",
+            "https://images.unsplash.com/photo-1612531380796-cc6908e230df",
+        ],
+        about: "Phở Thìn là thương hiệu lâu đời nổi tiếng với nước dùng béo ngậy, thơm mùi gừng và hành. Bát phở đầy đặn, thịt bò xào tái lăn hấp dẫn.",
+        reviewCount: 234,
+        hygieneRating: 4.7,
+        seatingAvailability: "Trung bình",
+        featuredDishes: [
+            {
+                id: "1",
+                name: "Phở Bò Tái Lăn",
+                price: "65,000₫",
+                description:
+                    "Phở bò xào tái với nước dùng đậm vị và hành phi thơm lừng",
+                imageUrl:
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqtO2tytzHhjH8fT77l2EOAFs2BIK4TVlyWDIL9E_TSQlJSuxL-jEiusoFLWyMJP2uaBk6JcpctimAz14f-dep3Rt2LSJalCDYLXmmeSmowSnt7sU9xjFuXFVkxu71NBKAFPpGk9PGzy-2_=s680-w680-h510-rw",
+                isPopular: true,
+            },
+            {
+                id: "2",
+                name: "Trà Đá",
+                price: "5,000₫",
+                description:
+                    "Trà đá miễn phí, mát lạnh và giải nhiệt tuyệt vời",
+                imageUrl:
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4np94vtlG6Ft2kge5Yc1Rt2GUUA_AmSqQdnLid0uGlQetzIbmeMOWUAugTh5BeJaaM3HcWpofPgjDtc7oFZU_RkupjrWyhD15jDfAXZNSAnbotjWwVLvG3stIR92-LnFkvXZmcVb=s680-w680-h510-rw",
+            },
+        ],
+        reviews: [
+            {
+                id: 1,
+                userName: "Trần Văn Long",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66e8eb0275a36.",
+                rating: 5,
+                date: "12/05/2025",
+                comment:
+                    "Phở ngon đỉnh, thịt mềm, nước dùng béo ngậy. Đúng chuẩn Hà Nội!",
+                images: [
+                    "https://lh3.googleusercontent.com/gps-cs-s/AC9h4np94vtlG6Ft2kge5Yc1Rt2GUUA_AmSqQdnLid0uGlQetzIbmeMOWUAugTh5BeJaaM3HcWpofPgjDtc7oFZU_RkupjrWyhD15jDfAXZNSAnbotjWwVLvG3stIR92-LnFkvXZmcVb=s680-w680-h510-rw",
+                ],
+            },
+            {
+                id: 2,
+                userName: "Nguyễn Phương Linh",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66e42b6f95a99.",
+                rating: 4,
+                date: "10/05/2025",
+                comment:
+                    "Quán hơi đông nhưng đáng để thử. Hành và gừng thơm lắm!",
+            },
+        ],
     },
+    {
+        id: "6",
+        name: "Mì Quảng Bà Mua",
+        rating: 4.5,
+        address: "95 Nguyễn Tri Phương, Đà Nẵng",
+        distance: "1.1",
+        openingHours: "6 AM - 10 PM",
+        price: "30,000 - 60,000₫",
+        imageUrl:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMwlQhggjardbWDqYUQxTno37kEDS1TVpt1Q&s",
+        isBusy: false,
+        isRecommended: false,
+        images: [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMwlQhggjardbWDqYUQxTno37kEDS1TVpt1Q&s",
+            "https://images.unsplash.com/photo-1589100730005-cd1b8cc97c10",
+            "https://images.unsplash.com/photo-1572635196237-14b1f228f19b",
+        ],
+        about: "Mì Quảng Bà Mua là địa chỉ quen thuộc với người dân Đà Nẵng. Món mì đậm đà, topping đa dạng từ tôm, thịt, trứng đến bánh tráng giòn tan.",
+        reviewCount: 185,
+        hygieneRating: 4.2,
+        seatingAvailability: "Tốt",
+        featuredDishes: [
+            {
+                id: "1",
+                name: "Mì Quảng Tôm Thịt",
+                price: "50,000₫",
+                description:
+                    "Mì Quảng sợi to, ăn cùng nước sốt đậm đà, thịt heo và tôm rim",
+                imageUrl:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS141U-grAwvB9NNhUphmOvKTajg7oVF9cQaw&s",
+                isPopular: true,
+            },
+            {
+                id: "2",
+                name: "Ram Cuốn",
+                price: "20,000₫",
+                description:
+                    "Ram nhỏ giòn tan, cuốn bánh tráng và rau sống tươi ngon",
+                imageUrl:
+                    "https://cdn.khamphadanang.vn/wp-content/uploads/2024/11/mi-quang-ba-mua1.jpg",
+            },
+        ],
+        reviews: [
+            {
+                id: 1,
+                userName: "Lê Văn Tâm",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66e307d8b8d19.",
+                rating: 5,
+                date: "08/05/2025",
+                comment:
+                    "Sợi mì dai ngon, nước sốt mặn mà, ram cuốn ăn kèm quá hợp!",
+                images: [
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS141U-grAwvB9NNhUphmOvKTajg7oVF9cQaw&s",
+                ],
+            },
+            {
+                id: 2,
+                userName: "Phạm Mỹ Duyên",
+                userAvatar:
+                    "https://schooler.sun-asterisk.com/storage/images/avatar/student/66e2b19a5693c.",
+                rating: 4,
+                date: "05/05/2025",
+                comment:
+                    "Món ngon, trình bày đẹp. Chỉ hơi chờ lâu vào giờ cao điểm.",
+            },
+        ],
+    },
+
+    // ...add similar detailed information for remaining restaurants...
 ];
 
 // Filter option types
@@ -93,9 +443,10 @@ const HomePage = ({ showSuggestion }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [restaurants, setRestaurants] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState(filterOptions.ALL);
-    const [showRecommendation, setShowRecommendation] = useState(false);
+    const [showRecommendation, setShowRecommendation] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isScrolled, setIsScrolled] = useState(false);
     const [showFilterPopup, setShowFilterPopup] = useState(false);
@@ -111,7 +462,15 @@ const HomePage = ({ showSuggestion }) => {
     const [showRatingDropdown, setShowRatingDropdown] = useState(false);
 
     // Filter options data
-    const radiusOptions = ["< 1km", "< 2km", "< 5km", "Không giới hạn"];
+    const radiusOptions = [
+        "< 100m",
+        "< 200m",
+        "< 500m",
+        "< 1km",
+        "< 2km",
+        "< 5km",
+        "Không giới hạn",
+    ];
     const priceOptions = [
         "< 30.000đ",
         "30.000đ - 50.000đ",
@@ -122,11 +481,25 @@ const HomePage = ({ showSuggestion }) => {
     const ratingOptions = ["5 sao", "4+ sao", "3+ sao", "Tất cả"];
 
     useEffect(() => {
+        // Try to load from localStorage first
+        const storedRestaurants = localStorage.getItem("restaurants");
+
+        if (storedRestaurants) {
+            // Use data from localStorage if available
+            setRestaurants(JSON.parse(storedRestaurants));
+        } else {
+            // Otherwise use initial data and store in localStorage
+            setRestaurants(initialRestaurants);
+            localStorage.setItem(
+                "restaurants",
+                JSON.stringify(initialRestaurants)
+            );
+        }
+
         // Simulate loading delay
         const timer = setTimeout(() => {
             setIsLoading(false);
-            // Show recommendation after a short delay
-            setTimeout(() => setShowRecommendation(true), 500);
+            setShowRecommendation(true);
         }, 1500);
 
         // Add scroll listener
@@ -137,6 +510,31 @@ const HomePage = ({ showSuggestion }) => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+
+    // Update localStorage when restaurants change (for reviews)
+    useEffect(() => {
+        if (restaurants.length > 0) {
+            localStorage.setItem("restaurants", JSON.stringify(restaurants));
+        }
+    }, [restaurants]);
+
+    // Check if reviews were updated from ExplorePage
+    useEffect(() => {
+        if (location.state && location.state.updatedRestaurant) {
+            const { updatedRestaurant } = location.state;
+
+            setRestaurants((prev) =>
+                prev.map((restaurant) =>
+                    restaurant.id === updatedRestaurant.id
+                        ? updatedRestaurant
+                        : restaurant
+                )
+            );
+
+            // Clear the navigation state
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
 
     const handleScroll = () => {
         setIsScrolled(window.scrollY > 50);
@@ -281,8 +679,10 @@ const HomePage = ({ showSuggestion }) => {
 
     const handleRestaurantPress = (restaurant) => {
         console.log(`Selected restaurant: ${restaurant.name}`);
-        // Navigate to the restaurant detail screen with restaurant data
-        navigate(`/explore`, { state: { restaurant } });
+        // Navigate to the restaurant detail screen with restaurant ID
+        navigate(`/explore/${restaurant.id}`, {
+            state: { restaurantId: restaurant.id },
+        });
     };
 
     const handleRecommendationClose = () => {
@@ -473,12 +873,12 @@ const HomePage = ({ showSuggestion }) => {
                             )}
                         </div>
 
-                        <button
+                        {/* <button
                             className="filter-apply-button"
                             onClick={applyFilters}
                         >
                             Áp dụng
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaChevronLeft, FaStar } from "react-icons/fa";
 import ReviewList from "../components/ReviewList";
@@ -9,9 +9,10 @@ const ReviewsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {
+        restaurantId,
         restaurantName,
-        rating,
-        reviewCount,
+        rating: initialRating,
+        reviewCount: initialReviewCount,
         reviews: initialReviews,
     } = location.state || {
         restaurantName: "Bún Chả 52 Tạ Hiện",
@@ -23,14 +24,49 @@ const ReviewsPage = () => {
     const [activeTab, setActiveTab] = useState("recent");
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [reviews, setReviews] = useState(initialReviews || []);
+    const [rating, setRating] = useState(initialRating);
+    const [reviewCount, setReviewCount] = useState(initialReviewCount);
 
     const handleBack = () => {
-        // Pass the updated reviews back to the previous page
-        navigate(-1, {
-            state: {
-                updatedReviews: reviews,
-            },
-        });
+        // If we have a restaurant ID, pass updated data back
+        if (restaurantId) {
+            // Get current restaurants from localStorage
+            const storedRestaurants =
+                JSON.parse(localStorage.getItem("restaurants")) || [];
+            const restaurant = storedRestaurants.find(
+                (r) => r.id === restaurantId
+            );
+
+            if (restaurant) {
+                // Update restaurant with new reviews and rating
+                const updatedRestaurant = {
+                    ...restaurant,
+                    reviews: reviews,
+                    rating: rating,
+                    reviewCount: reviewCount,
+                };
+
+                // Update in localStorage
+                const updatedRestaurants = storedRestaurants.map((r) =>
+                    r.id === restaurantId ? updatedRestaurant : r
+                );
+                localStorage.setItem(
+                    "restaurants",
+                    JSON.stringify(updatedRestaurants)
+                );
+
+                // Navigate back with updated restaurant data
+                navigate(-1, {
+                    state: {
+                        updatedRestaurant: updatedRestaurant,
+                    },
+                });
+            } else {
+                navigate(-1);
+            }
+        } else {
+            navigate(-1);
+        }
     };
 
     const handleWriteReview = () => {
@@ -48,10 +84,29 @@ const ReviewsPage = () => {
 
         const updatedReviews = [reviewToAdd, ...reviews];
         setReviews(updatedReviews);
+
+        // Update rating and review count
+        const newReviewCount = reviewCount + 1;
+        const newRating = calculateNewRating(
+            rating,
+            reviewCount,
+            newReview.rating
+        );
+
+        setRating(newRating);
+        setReviewCount(newReviewCount);
         setShowReviewForm(false);
 
         // Show success notification
         alert("Đánh giá của bạn đã được gửi thành công!");
+    };
+
+    // Calculate new average rating when a new review is added
+    const calculateNewRating = (currentRating, currentCount, newRating) => {
+        const totalRating = currentRating * currentCount + newRating;
+        const newCount = currentCount + 1;
+        const newAverage = totalRating / newCount;
+        return parseFloat(newAverage.toFixed(1));
     };
 
     // Filter reviews based on active tab

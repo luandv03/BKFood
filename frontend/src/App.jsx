@@ -32,6 +32,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<HomePage />} />
                     <Route path="explore" element={<ExplorePage />} />
+                    <Route path="explore/:id" element={<ExplorePage />} />
                     <Route path="orders" element={<OrdersPage />} />
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="more" element={<MorePage />} />

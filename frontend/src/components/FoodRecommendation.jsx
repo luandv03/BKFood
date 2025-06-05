@@ -35,7 +35,7 @@ const FoodRecommendation = ({ onClose }) => {
         // Hẹn giờ tự động đóng sau 10 giây
         const timer = setTimeout(() => {
             if (onClose) onClose();
-        }, 10000);
+        }, 1000000);
 
         return () => clearTimeout(timer);
     }, [onClose]);

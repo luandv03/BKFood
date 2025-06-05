@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
     FaCalendarAlt,
     FaCheckCircle,
@@ -8,15 +8,19 @@ import {
     FaSpinner,
     FaStore,
     FaGamepad,
+    FaEarlybirds,
+    FaChessBoard,
+    FaBrain,
+    FaTimes,
 } from "react-icons/fa";
 import "./OrdersPage.css";
 
-// Dữ liệu đơn hàng mẫu
-const orderHistory = [
+// Sample history data if none in localStorage
+const sampleOrderHistory = [
     {
         id: "OR12345",
         date: "20/05/2025",
-        restaurant: "Phở Hà Nội",
+        restaurant: { name: "Phở Hà Nội" },
         items: [
             { name: "Phở Bò Đặc Biệt", quantity: 1, price: "65,000₫" },
             { name: "Gỏi Cuốn", quantity: 2, price: "45,000₫" },
@@ -28,7 +32,7 @@ const orderHistory = [
     {
         id: "OR12346",
         date: "18/05/2025",
-        restaurant: "Bún Chả Hương Liên",
+        restaurant: { name: "Bún Chả Hương Liên" },
         items: [
             { name: "Bún Chả", quantity: 2, price: "55,000₫" },
             { name: "Nem Cua Bể", quantity: 1, price: "35,000₫" },
@@ -38,28 +42,6 @@ const orderHistory = [
         deliveryTime: "12:00 - 12:30",
     },
 ];
-
-// Đơn hàng đang xử lý
-const activeOrder = {
-    id: "OR12347",
-    date: "20/05/2025",
-    restaurant: "Cơm Tấm Sài Gòn",
-    items: [
-        { name: "Cơm Tấm Sườn Bì Chả", quantity: 1, price: "60,000₫" },
-        { name: "Chè Thái", quantity: 1, price: "25,000₫" },
-    ],
-    totalAmount: "85,000₫",
-    status: "processing",
-    deliveryTime: "14:30 - 15:00",
-    currentStep: 2,
-    steps: [
-        { id: 1, title: "Đã đặt hàng", time: "13:55", completed: true },
-        { id: 2, title: "Đã xác nhận", time: "14:05", completed: true },
-        { id: 3, title: "Đang chuẩn bị", time: "", completed: false },
-        { id: 4, title: "Đã hoàn thành", time: "", completed: false },
-    ],
-    estimatedArrival: "14:45",
-};
 
 // Thành phần hiển thị trạng thái đơn hàng
 const OrderStatus = ({ status }) => {
@@ -89,10 +71,176 @@ const OrderStatus = ({ status }) => {
 
 const OrdersPage = () => {
     const [activeTab, setActiveTab] = useState("active");
+    const [showGameSelection, setShowGameSelection] = useState(false);
+    const [selectedGame, setSelectedGame] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
+    // States for orders
+    const [activeOrders, setActiveOrders] = useState([]);
+    const [historyOrders, setHistoryOrders] = useState([]);
+
+    // Load orders from localStorage whenever we return to this page
+    useEffect(() => {
+        function loadOrders() {
+            // Load active orders
+            const storedActiveOrders =
+                JSON.parse(localStorage.getItem("activeOrders")) || [];
+            setActiveOrders(storedActiveOrders);
+
+            // Load order history
+            const storedHistoryOrders =
+                JSON.parse(localStorage.getItem("orderHistory")) ||
+                sampleOrderHistory;
+            setHistoryOrders(storedHistoryOrders);
+        }
+
+        // Load orders immediately on component mount
+        loadOrders();
+
+        // Add event listener for when the page becomes visible again
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                loadOrders();
+            }
+        });
+
+        // Cleanup event listener
+        return () => {
+            document.removeEventListener("visibilitychange", loadOrders);
+        };
+    }, []);
+
+    // Separate effect for handling new orders
+    useEffect(() => {
+        if (location.state && location.state.orderJustPlaced) {
+            // Clear state to avoid repeated updates
+            window.history.replaceState({}, document.title);
+
+            // Reload orders to ensure we have the latest
+            const storedActiveOrders =
+                JSON.parse(localStorage.getItem("activeOrders")) || [];
+            setActiveOrders(storedActiveOrders);
+
+            // Simulate order status updates
+            const timer1 = setTimeout(() => {
+                updateOrderStatus(storedActiveOrders[0]?.id, 2);
+            }, 5000);
+
+            const timer2 = setTimeout(() => {
+                updateOrderStatus(storedActiveOrders[0]?.id, 3);
+            }, 15000);
+
+            return () => {
+                clearTimeout(timer1);
+                clearTimeout(timer2);
+            };
+        }
+    }, [location.state]);
+
+    // Function to update order status - fixed to use the latest stored orders
+    const updateOrderStatus = (orderId, stepNumber) => {
+        if (!orderId) return;
+
+        // Get the latest orders from localStorage
+        const latestOrders =
+            JSON.parse(localStorage.getItem("activeOrders")) || [];
+
+        const updatedOrders = latestOrders.map((order) => {
+            if (order.id === orderId) {
+                const updatedSteps = order.steps.map((step) => {
+                    if (step.id === stepNumber) {
+                        return {
+                            ...step,
+                            completed: true,
+                            time: new Date().toLocaleTimeString("vi-VN", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            }),
+                        };
+                    }
+                    return step;
+                });
+
+                return {
+                    ...order,
+                    currentStep: stepNumber,
+                    steps: updatedSteps,
+                };
+            }
+            return order;
+        });
+
+        // Update state and localStorage
+        setActiveOrders(updatedOrders);
+        localStorage.setItem("activeOrders", JSON.stringify(updatedOrders));
+    };
+
+    // Function to complete order and move to history - fixed to use latest data
+    const completeOrder = (orderId) => {
+        // Get the latest data from localStorage
+        const latestActiveOrders =
+            JSON.parse(localStorage.getItem("activeOrders")) || [];
+        const latestHistoryOrders =
+            JSON.parse(localStorage.getItem("orderHistory")) || [];
+
+        const orderToComplete = latestActiveOrders.find(
+            (order) => order.id === orderId
+        );
+
+        if (orderToComplete) {
+            // Update the completed order
+            const completedOrder = {
+                ...orderToComplete,
+                status: "delivered",
+                steps: orderToComplete.steps.map((step) => ({
+                    ...step,
+                    completed: true,
+                    time:
+                        step.time ||
+                        new Date().toLocaleTimeString("vi-VN", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        }),
+                })),
+            };
+
+            // Add to history
+            const updatedHistory = [completedOrder, ...latestHistoryOrders];
+            setHistoryOrders(updatedHistory);
+            localStorage.setItem(
+                "orderHistory",
+                JSON.stringify(updatedHistory)
+            );
+
+            // Remove from active orders
+            const updatedActiveOrders = latestActiveOrders.filter(
+                (order) => order.id !== orderId
+            );
+            setActiveOrders(updatedActiveOrders);
+            localStorage.setItem(
+                "activeOrders",
+                JSON.stringify(updatedActiveOrders)
+            );
+        }
+    };
+
+    // Get current active order
+    const currentActiveOrder = activeOrders[0];
+
+    // Game-related handlers
     const handlePlayGame = () => {
-        navigate("/game");
+        setShowGameSelection(true);
+    };
+
+    const handleGameSelect = (gameType) => {
+        setSelectedGame(gameType);
+    };
+
+    const handleStartGame = () => {
+        if (selectedGame) {
+            navigate(`/game?game=${selectedGame}`);
+        }
     };
 
     return (
@@ -122,24 +270,33 @@ const OrdersPage = () => {
 
             <div className="orders-content">
                 {activeTab === "active" ? (
-                    activeOrder ? (
+                    currentActiveOrder ? (
                         <div className="active-order">
                             <div className="order-tracking-card">
                                 <div className="tracking-header">
                                     <div>
                                         <h2>Theo dõi đơn hàng</h2>
                                         <p className="order-id">
-                                            Mã đơn: {activeOrder.id}
+                                            Mã đơn: {currentActiveOrder.id}
                                         </p>
                                     </div>
-                                    <OrderStatus status={activeOrder.status} />
+                                    <OrderStatus
+                                        status={currentActiveOrder.status}
+                                    />
                                 </div>
 
                                 <div className="restaurant-info">
                                     <FaStore className="info-icon" />
                                     <div>
-                                        <h3>{activeOrder.restaurant}</h3>
-                                        <p>Đơn hàng đang được chuẩn bị</p>
+                                        <h3>
+                                            {currentActiveOrder.restaurant.name}
+                                        </h3>
+                                        <p>
+                                            {currentActiveOrder.deliveryLocation ===
+                                            "location"
+                                                ? "Đơn hàng sẽ được phục vụ tại quán"
+                                                : "Đơn hàng sẽ được chuẩn bị để mang đi"}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -151,7 +308,9 @@ const OrdersPage = () => {
                                                 Thời gian hoàn thành dự kiến
                                             </h3>
                                             <p>
-                                                {activeOrder.estimatedArrival}
+                                                {
+                                                    currentActiveOrder.estimatedArrival
+                                                }
                                             </p>
                                         </div>
                                     </div>
@@ -161,48 +320,51 @@ const OrdersPage = () => {
                                 </div>
 
                                 <div className="tracking-progress">
-                                    {activeOrder.steps.map((step, index) => (
-                                        <div
-                                            key={step.id}
-                                            className={`tracking-step ${
-                                                step.completed
-                                                    ? "completed"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <div className="step-icon">
-                                                {step.completed ? (
-                                                    <FaCheckCircle />
-                                                ) : index ===
-                                                  activeOrder.currentStep ? (
-                                                    <FaSpinner className="spinning" />
-                                                ) : (
-                                                    <div className="step-dot" />
-                                                )}
-                                            </div>
-                                            <div className="step-content">
-                                                <p className="step-title">
-                                                    {step.title}
-                                                </p>
-                                                {step.time && (
-                                                    <p className="step-time">
-                                                        {step.time}
+                                    {currentActiveOrder.steps.map(
+                                        (step, index) => (
+                                            <div
+                                                key={step.id}
+                                                className={`tracking-step ${
+                                                    step.completed
+                                                        ? "completed"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <div className="step-icon">
+                                                    {step.completed ? (
+                                                        <FaCheckCircle />
+                                                    ) : index ===
+                                                      currentActiveOrder.currentStep ? (
+                                                        <FaSpinner className="spinning" />
+                                                    ) : (
+                                                        <div className="step-dot" />
+                                                    )}
+                                                </div>
+                                                <div className="step-content">
+                                                    <p className="step-title">
+                                                        {step.title}
                                                     </p>
+                                                    {step.time && (
+                                                        <p className="step-time">
+                                                            {step.time}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                {index <
+                                                    currentActiveOrder.steps
+                                                        .length -
+                                                        1 && (
+                                                    <div className="step-line" />
                                                 )}
                                             </div>
-                                            {index <
-                                                activeOrder.steps.length -
-                                                    1 && (
-                                                <div className="step-line" />
-                                            )}
-                                        </div>
-                                    ))}
+                                        )
+                                    )}
                                 </div>
 
                                 <div className="order-summary">
                                     <h3>Tóm tắt đơn hàng</h3>
                                     <div className="order-items">
-                                        {activeOrder.items.map(
+                                        {currentActiveOrder.items.map(
                                             (item, index) => (
                                                 <div
                                                     key={index}
@@ -226,7 +388,7 @@ const OrdersPage = () => {
                                     <div className="order-total">
                                         <span>Tổng cộng:</span>
                                         <span className="total-amount">
-                                            {activeOrder.totalAmount}
+                                            {currentActiveOrder.totalAmount}
                                         </span>
                                     </div>
                                 </div>
@@ -239,6 +401,21 @@ const OrdersPage = () => {
                                         Theo dõi người giao
                                     </button>
                                 </div> */}
+
+                                {currentActiveOrder.currentStep === 3 && (
+                                    <div className="order-actions">
+                                        <button
+                                            className="primary-button"
+                                            onClick={() =>
+                                                completeOrder(
+                                                    currentActiveOrder.id
+                                                )
+                                            }
+                                        >
+                                            Đã nhận đơn
+                                        </button>
+                                    </div>
+                                )}
 
                                 <div className="game-action">
                                     <button
@@ -260,7 +437,10 @@ const OrdersPage = () => {
                             <p>
                                 Khi bạn đặt đơn hàng, chúng sẽ xuất hiện ở đây
                             </p>
-                            <button className="primary-button">
+                            <button
+                                className="primary-button"
+                                onClick={() => navigate("/")}
+                            >
                                 Đặt món ngay
                             </button>
                             <button
@@ -274,16 +454,16 @@ const OrdersPage = () => {
                 ) : (
                     <div className="order-history">
                         <h2>Lịch sử đơn hàng</h2>
-                        {orderHistory.length > 0 ? (
+                        {historyOrders.length > 0 ? (
                             <div className="history-list">
-                                {orderHistory.map((order) => (
+                                {historyOrders.map((order) => (
                                     <div
                                         key={order.id}
                                         className="history-card"
                                     >
                                         <div className="history-header">
                                             <div>
-                                                <h3>{order.restaurant}</h3>
+                                                <h3>{order.restaurant.name}</h3>
                                                 <p className="history-date">
                                                     {order.date} •{" "}
                                                     {order.deliveryTime}
@@ -331,6 +511,84 @@ const OrdersPage = () => {
                     </div>
                 )}
             </div>
+
+            {/* Game Selection Popup */}
+            {showGameSelection && (
+                <div className="game-selection-popup">
+                    <div className="game-selection-content">
+                        <div className="game-selection-header">
+                            <h2>Chọn trò chơi</h2>
+                            <button
+                                className="game-selection-close"
+                                onClick={() => setShowGameSelection(false)}
+                            >
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        <div className="game-options">
+                            <div
+                                className={`game-option ${
+                                    selectedGame === "flappybird"
+                                        ? "selected"
+                                        : ""
+                                }`}
+                                onClick={() => handleGameSelect("flappybird")}
+                            >
+                                <div className="game-icon">
+                                    <FaEarlybirds />
+                                </div>
+                                <div className="game-title">Flappy Bird</div>
+                                <div className="game-description">
+                                    Bay qua các ống và ghi điểm
+                                </div>
+                            </div>
+
+                            <div
+                                className={`game-option ${
+                                    selectedGame === "2048" ? "selected" : ""
+                                }`}
+                                onClick={() => handleGameSelect("2048")}
+                            >
+                                <div className="game-icon">
+                                    <FaChessBoard />
+                                </div>
+                                <div className="game-title">2048</div>
+                                <div className="game-description">
+                                    Ghép các ô số để đạt được 2048
+                                </div>
+                            </div>
+
+                            <div
+                                className={`game-option ${
+                                    selectedGame === "memory" ? "selected" : ""
+                                }`}
+                                onClick={() => handleGameSelect("memory")}
+                            >
+                                <div className="game-icon">
+                                    <FaBrain />
+                                </div>
+                                <div className="game-title">
+                                    Trò Chơi Trí Nhớ
+                                </div>
+                                <div className="game-description">
+                                    Lật thẻ và tìm các cặp giống nhau
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="game-selection-footer">
+                            <button
+                                className="start-game-btn"
+                                onClick={handleStartGame}
+                                disabled={!selectedGame}
+                            >
+                                Bắt đầu chơi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

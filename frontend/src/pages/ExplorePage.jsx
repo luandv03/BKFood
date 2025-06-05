@@ -10,114 +10,70 @@ import {
     FaStar,
     FaUsers,
 } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "./ExplorePage.css";
 import ReviewList from "../components/ReviewList";
 import ReviewForm from "../components/ReviewForm";
 
-// Sample restaurant data
-const restaurantDetail = {
-    id: "1",
-    name: "Phở Hà Nội",
-    rating: 4.8,
-    reviewCount: 128,
-    address: "123 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
-    distance: "0.2",
-    openingHours: "7 AM - 9 PM",
-    price: "30,000 - 65,000₫",
-    hygieneRating: 4.5,
-    seatingAvailability: "Tốt",
-    imageUrl:
-        "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1174&q=80",
-    images: [
-        "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1174&q=80",
-        "https://images.unsplash.com/photo-1555126634-323283e090fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
-        "https://images.unsplash.com/photo-1576749872435-ff88a71c1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
-    ],
-    isBusy: true,
-    about: "Được thành lập vào năm 2010, Phở Hà Nội phục vụ ẩm thực Việt Nam truyền thống cho khách hàng tại Hà Nội. Chuyên môn của chúng tôi là phở bò truyền thống được nấu với nước dùng đậm đà được ninh trong hơn 8 giờ với các loại thảo mộc và gia vị.",
-    featuredDishes: [
-        {
-            id: "1",
-            name: "Phở Bò Đặc Biệt",
-            price: "65,000₫",
-            description:
-                "Phở bò đặc biệt với các loại thịt bò cao cấp và nước dùng đậm đà",
-            imageUrl:
-                "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
-            isPopular: true,
-        },
-        {
-            id: "2",
-            name: "Bún Chả",
-            price: "55,000₫",
-            description:
-                "Bún chả với thịt lợn nướng than hoa, ăn kèm với bún, rau sống và nước mắm chua ngọt",
-            imageUrl:
-                "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-            isPopular: true,
-        },
-        {
-            id: "3",
-            name: "Gỏi Cuốn",
-            price: "45,000₫",
-            description:
-                "Gỏi cuốn tôm thịt, cuốn với rau xanh, giá, bún và ăn với nước mắm pha",
-            imageUrl:
-                "https://images.unsplash.com/photo-1553701879-4aa576804f65?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-        },
-    ],
-};
-
 const ExplorePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { id } = useParams(); // Get restaurant ID from URL
+
+    // State for restaurant data
+    const [restaurantDetail, setRestaurantDetail] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [showOrderForm, setShowOrderForm] = useState(false);
     const [selectedQuantities, setSelectedQuantities] = useState({});
     const [isHeaderVisible, setIsHeaderVisible] = useState(false);
     const [showReviewForm, setShowReviewForm] = useState(false);
-    const [reviews, setReviews] = useState([
-        {
-            id: 1,
-            userName: "Nguyễn Gia Tùng Dương",
-            userAvatar:
-                "https://schooler.sun-asterisk.com/storage/images/avatar/student/66fe0da9a5d64.",
-            rating: 5,
-            date: "20/05/2025",
-            comment: "Món ăn rất ngon, phục vụ nhanh chóng!",
-            images: [
-                "https://images.unsplash.com/photo-1503764654157-72d979d9af2f",
-                "https://images.unsplash.com/photo-1555126634-323283e090fa",
-            ],
-        },
-        {
-            id: 2,
-            userName: "Dương Văn Giới",
-            userAvatar:
-                "https://schooler.sun-asterisk.com/storage/images/avatar/student/62fe68d66953c.",
-            rating: 4,
-            date: "19/05/2025",
-            comment: "Không gian quán đẹp, đồ ăn tạm ổn.",
-        },
-    ]);
+
+    // Load restaurant data from localStorage
+    useEffect(() => {
+        const fetchRestaurantData = () => {
+            // Get restaurantId from URL params or location state
+            const restaurantId =
+                id || (location.state && location.state.restaurantId);
+
+            if (!restaurantId) {
+                console.error("No restaurant ID provided");
+                return;
+            }
+
+            // Get restaurants from localStorage
+            const storedRestaurants = JSON.parse(
+                localStorage.getItem("restaurants")
+            );
+
+            if (!storedRestaurants) {
+                console.error("No restaurants found in localStorage");
+                return;
+            }
+
+            // Find the specific restaurant
+            const restaurant = storedRestaurants.find(
+                (r) => r.id === restaurantId
+            );
+
+            if (restaurant) {
+                setRestaurantDetail(restaurant);
+            } else {
+                console.error(`Restaurant with ID ${restaurantId} not found`);
+            }
+        };
+
+        fetchRestaurantData();
+    }, [id, location.state]);
 
     // Check if we should open review form from return navigation
     useEffect(() => {
         if (location.state && location.state.openReviewForm) {
             setShowReviewForm(true);
-            // Clear the state to avoid reopening on future navigations
+            // Clear the state
             window.history.replaceState({}, document.title);
         }
-
-        // Update reviews if we have received updated reviews from ReviewsPage
-        if (location.state && location.state.updatedReviews) {
-            setReviews(location.state.updatedReviews);
-            // Clear the state after using it
-            window.history.replaceState({}, document.title);
-        }
-    }, [location]);
+    }, [location.state]);
 
     useEffect(() => {
         function handleScroll() {
@@ -131,6 +87,16 @@ const ExplorePage = () => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // If restaurant data is not loaded yet
+    if (!restaurantDetail) {
+        return (
+            <div className="loading-container">
+                <div className="loader"></div>
+                <p>Đang tải thông tin nhà hàng...</p>
+            </div>
+        );
+    }
 
     const handleShare = () => {
         if (navigator.share) {
@@ -182,17 +148,66 @@ const ExplorePage = () => {
 
     const handleReviewSubmit = (newReview) => {
         const reviewToAdd = {
-            id: reviews.length + 1,
+            id: restaurantDetail.reviews
+                ? restaurantDetail.reviews.length + 1
+                : 1,
             userName: "Người dùng",
             userAvatar: "https://via.placeholder.com/40",
             date: new Date().toLocaleDateString("vi-VN"),
             ...newReview,
         };
-        setReviews([reviewToAdd, ...reviews]);
+
+        // Create new updated restaurant object with added review
+        const updatedRestaurant = {
+            ...restaurantDetail,
+            reviews: [reviewToAdd, ...(restaurantDetail.reviews || [])],
+            reviewCount: (restaurantDetail.reviewCount || 0) + 1,
+            // Update rating based on new review
+            rating: calculateNewRating(
+                restaurantDetail.rating,
+                restaurantDetail.reviewCount || 0,
+                newReview.rating
+            ),
+        };
+
+        // Update local state
+        setRestaurantDetail(updatedRestaurant);
+
+        // Update in localStorage
+        updateRestaurantInLocalStorage(updatedRestaurant);
+
         setShowReviewForm(false);
 
-        // Show success notification or toast
+        // Show success notification
         alert("Đánh giá của bạn đã được gửi thành công!");
+    };
+
+    // Function to update restaurant in localStorage
+    const updateRestaurantInLocalStorage = (updatedRestaurant) => {
+        const storedRestaurants = JSON.parse(
+            localStorage.getItem("restaurants")
+        );
+
+        if (storedRestaurants) {
+            const updatedRestaurants = storedRestaurants.map((restaurant) =>
+                restaurant.id === updatedRestaurant.id
+                    ? updatedRestaurant
+                    : restaurant
+            );
+
+            localStorage.setItem(
+                "restaurants",
+                JSON.stringify(updatedRestaurants)
+            );
+        }
+    };
+
+    // Function to calculate new average rating
+    const calculateNewRating = (currentRating, currentCount, newRating) => {
+        const totalRating = currentRating * currentCount + newRating;
+        const newCount = currentCount + 1;
+        const newAverage = totalRating / newCount;
+        return parseFloat(newAverage.toFixed(1));
     };
 
     const handleOrderButtonClick = () => {
@@ -237,7 +252,7 @@ const ExplorePage = () => {
 
     return (
         <div className="explore-page">
-            {/* Header Image Carousel */}
+            {/* Image carousel */}
             <div className="image-carousel">
                 <div
                     className="image-carousel-inner"
@@ -245,28 +260,30 @@ const ExplorePage = () => {
                         transform: `translateX(-${currentImageIndex * 100}%)`,
                     }}
                 >
-                    {restaurantDetail.images.map((image, index) => (
-                        <div key={index} className="carousel-item">
-                            <img
-                                src={image}
-                                alt={`${restaurantDetail.name} - Image ${
-                                    index + 1
-                                }`}
-                            />
-                        </div>
-                    ))}
+                    {restaurantDetail.images &&
+                        restaurantDetail.images.map((image, index) => (
+                            <div key={index} className="carousel-item">
+                                <img
+                                    src={image}
+                                    alt={`${restaurantDetail.name} - Image ${
+                                        index + 1
+                                    }`}
+                                />
+                            </div>
+                        ))}
                 </div>
 
                 <div className="carousel-indicators">
-                    {restaurantDetail.images.map((_, index) => (
-                        <button
-                            key={index}
-                            className={`indicator ${
-                                currentImageIndex === index ? "active" : ""
-                            }`}
-                            onClick={() => handleImageChange(index)}
-                        />
-                    ))}
+                    {restaurantDetail.images &&
+                        restaurantDetail.images.map((_, index) => (
+                            <button
+                                key={index}
+                                className={`indicator ${
+                                    currentImageIndex === index ? "active" : ""
+                                }`}
+                                onClick={() => handleImageChange(index)}
+                            />
+                        ))}
                 </div>
             </div>
 
@@ -355,11 +372,12 @@ const ExplorePage = () => {
                             onClick={() =>
                                 navigate("/reviews", {
                                     state: {
+                                        restaurantId: restaurantDetail.id,
                                         restaurantName: restaurantDetail.name,
                                         rating: restaurantDetail.rating,
                                         reviewCount:
                                             restaurantDetail.reviewCount,
-                                        reviews: reviews,
+                                        reviews: restaurantDetail.reviews || [],
                                     },
                                 })
                             }
@@ -388,7 +406,7 @@ const ExplorePage = () => {
                             <div
                                 className="review-form-modal"
                                 onClick={(e) => e.stopPropagation()}
-                                style={{ marginBottom: "80px" }} // Add extra margin at the bottom
+                                style={{ marginBottom: "80px" }}
                             >
                                 <ReviewForm
                                     onSubmit={handleReviewSubmit}
@@ -398,7 +416,9 @@ const ExplorePage = () => {
                         </div>
                     )}
 
-                    <ReviewList reviews={reviews.slice(0, 2)} />
+                    <ReviewList
+                        reviews={(restaurantDetail.reviews || []).slice(0, 2)}
+                    />
                 </div>
 
                 {/* Featured dishes */}
@@ -495,7 +515,7 @@ const ExplorePage = () => {
                 )}
             </div>
 
-            {/* Order form modal (simplified) */}
+            {/* Order form modal */}
             {showOrderForm && (
                 <div
                     className="modal-overlay"

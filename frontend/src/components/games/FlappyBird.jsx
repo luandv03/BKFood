@@ -1,15 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaTimes, FaCheck } from "react-icons/fa";
-import "./GamePage.css";
-import FlappyBird from "../components/games/FlappyBird"; // Assuming you have a FlappyBird component
-import Game2048 from "../components/games/Game2048";
-import MemoryGame from "../components/games/MemoryGame";
+import "./FlappyBird.css";
 
-const GamePage = () => {
-    const [searchParams] = useSearchParams();
-    console.log(searchParams.get("game")); // 'name'
-
+const FlappyBird = () => {
     const navigate = useNavigate();
     const canvasRef = useRef(null);
     const [gameStarted, setGameStarted] = useState(false);
@@ -363,131 +357,125 @@ const GamePage = () => {
     };
 
     return (
-        // <div className="game-page">
-        //     <div className="game-header">
-        //         <button className="back-button" onClick={handleBack}>
-        //             <FaArrowLeft />
-        //         </button>
-        //         <h1 className="game-title">Flappy Bird</h1>
-        //     </div>
+        <div className="game-page">
+            <div className="game-header">
+                <button className="back-button" onClick={handleBack}>
+                    <FaArrowLeft />
+                </button>
+                <h1 className="game-title">Flappy Bird</h1>
+            </div>
 
-        //     {!gameStarted && (
-        //         <div className="game-countdown">
-        //             <h2>{countdown}</h2>
-        //             <p>Trò chơi sẽ bắt đầu sau {countdown} giây</p>
-        //         </div>
-        //     )}
+            {!gameStarted && (
+                <div className="game-countdown">
+                    <h2>{countdown}</h2>
+                    <p>Trò chơi sẽ bắt đầu sau {countdown} giây</p>
+                </div>
+            )}
 
-        //     <div className="game-info-bar">
-        //         <div className="game-info-item">
-        //             <span className="info-label">Thời gian còn lại:</span>
-        //             <span className="info-value">
-        //                 {formatTime(gameInfo.remainingTime)}
-        //             </span>
-        //         </div>
-        //         <div className="game-info-item">
-        //             <span className="info-label">1 x Món ăn đặc biệt:</span>
-        //             <span className="info-value reward">{gameInfo.reward}</span>
-        //         </div>
-        //     </div>
+            <div className="game-info-bar">
+                <div className="game-info-item">
+                    <span className="info-label">Thời gian còn lại:</span>
+                    <span className="info-value">
+                        {formatTime(gameInfo.remainingTime)}
+                    </span>
+                </div>
+                <div className="game-info-item">
+                    <span className="info-label">1 x Món ăn đặc biệt:</span>
+                    <span className="info-value reward">{gameInfo.reward}</span>
+                </div>
+            </div>
 
-        //     <div className="game-container">
-        //         <canvas ref={canvasRef} className="game-canvas"></canvas>
-        //     </div>
+            <div className="game-container">
+                <canvas ref={canvasRef} className="game-canvas"></canvas>
+            </div>
 
-        //     {/* Points Accumulation Popup */}
-        //     {showPointsPopup && (
-        //         <div className="popup-overlay">
-        //             <div className="popup-content">
-        //                 <h2>Tích điểm thưởng</h2>
-        //                 <p>
-        //                     Bạn có muốn tích {finalScore} điểm vào tài khoản
-        //                     thưởng không?
-        //                 </p>
-        //                 <div className="popup-actions">
-        //                     <button
-        //                         className="popup-button cancel"
-        //                         onClick={handleDeclinePoints}
-        //                     >
-        //                         <FaTimes /> Không
-        //                     </button>
-        //                     <button
-        //                         className="popup-button confirm"
-        //                         onClick={handleAccumulatePoints}
-        //                     >
-        //                         <FaCheck /> Có
-        //                     </button>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     )}
+            {/* Points Accumulation Popup */}
+            {showPointsPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h2>Tích điểm thưởng</h2>
+                        <p>
+                            Bạn có muốn tích {finalScore} điểm vào tài khoản
+                            thưởng không?
+                        </p>
+                        <div className="popup-actions">
+                            <button
+                                className="popup-button cancel"
+                                onClick={handleDeclinePoints}
+                            >
+                                <FaTimes /> Không
+                            </button>
+                            <button
+                                className="popup-button confirm"
+                                onClick={handleAccumulatePoints}
+                            >
+                                <FaCheck /> Có
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-        //     {/* Success Popup */}
-        //     {showSuccessPopup && (
-        //         <div className="popup-overlay">
-        //             <div className="popup-content success">
-        //                 <FaCheck className="success-icon" />
-        //                 <h2>Thành công!</h2>
-        //                 <p>Bạn đã tích điểm thành công.</p>
-        //             </div>
-        //         </div>
-        //     )}
+            {/* Success Popup */}
+            {showSuccessPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content success">
+                        <FaCheck className="success-icon" />
+                        <h2>Thành công!</h2>
+                        <p>Bạn đã tích điểm thành công.</p>
+                    </div>
+                </div>
+            )}
 
-        //     {/* Continue Playing Popup */}
-        //     {showContinuePopup && (
-        //         <div className="popup-overlay">
-        //             <div className="popup-content">
-        //                 <h2>Tiếp tục chơi?</h2>
-        //                 <p>Bạn có muốn chơi lại không?</p>
-        //                 <div className="popup-actions">
-        //                     <button
-        //                         className="popup-button cancel"
-        //                         onClick={handleQuitGame}
-        //                     >
-        //                         <FaTimes /> Không
-        //                     </button>
-        //                     <button
-        //                         className="popup-button confirm"
-        //                         onClick={handleContinuePlaying}
-        //                     >
-        //                         <FaCheck /> Có
-        //                     </button>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     )}
+            {/* Continue Playing Popup */}
+            {showContinuePopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h2>Tiếp tục chơi?</h2>
+                        <p>Bạn có muốn chơi lại không?</p>
+                        <div className="popup-actions">
+                            <button
+                                className="popup-button cancel"
+                                onClick={handleQuitGame}
+                            >
+                                <FaTimes /> Không
+                            </button>
+                            <button
+                                className="popup-button confirm"
+                                onClick={handleContinuePlaying}
+                            >
+                                <FaCheck /> Có
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-        //     {/* Order Done Popup */}
-        //     {showOrderDonePopup && (
-        //         <div className="popup-overlay">
-        //             <div className="popup-content">
-        //                 <h2>Món ăn đã hoàn thành!</h2>
-        //                 <p>
-        //                     Nhà hàng đã chuẩn bị xong món ăn cho bạn, hãy tới
-        //                     thưởng thức ngay thôi nào.
-        //                 </p>
-        //                 <div className="popup-actions">
-        //                     <button
-        //                         className="popup-button confirm"
-        //                         onClick={() => {
-        //                             setShowOrderDonePopup(false);
-        //                             navigate(-1); // Navigate back to previous screen
-        //                         }}
-        //                     >
-        //                         <FaCheck /> Thoát
-        //                     </button>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     )}
-        // </div>
-        <>
-            {searchParams.get("game") === "flappybird" && <FlappyBird />}
-
-            {searchParams.get("game") === "2048" && <Game2048 />}
-            {searchParams.get("game") === "memory" && <MemoryGame />}
-        </>
+            {/* Order Done Popup */}
+            {showOrderDonePopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h2>Món ăn đã hoàn thành!</h2>
+                        <p>
+                            Nhà hàng đã chuẩn bị xong món ăn cho bạn, hãy tới
+                            thưởng thức ngay thôi nào.
+                        </p>
+                        <div className="popup-actions">
+                            <button
+                                className="popup-button confirm"
+                                onClick={() => {
+                                    setShowOrderDonePopup(false);
+                                    navigate(-1); // Navigate back to previous screen
+                                }}
+                            >
+                                <FaCheck /> Thoát
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 
-export default GamePage;
+export default FlappyBird;
