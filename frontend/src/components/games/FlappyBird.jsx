@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft, FaTimes, FaCheck } from "react-icons/fa";
 import "./FlappyBird.css";
 
@@ -342,9 +342,16 @@ const FlappyBird = () => {
     // Handle quit game
     const handleQuitGame = () => {
         setShowContinuePopup(false);
+
+        console.log("Game quit, returning to previous screen.");
+
+        setShowOrderDonePopup(true);
+
         // Return to previous screen
         // navigate(-1);
     };
+
+    console.log(showOrderDonePopup);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -465,7 +472,11 @@ const FlappyBird = () => {
                                 className="popup-button confirm"
                                 onClick={() => {
                                     setShowOrderDonePopup(false);
-                                    navigate(-1); // Navigate back to previous screen
+                                    navigate("/orders", {
+                                        state: {
+                                            orderStep: 3,
+                                        },
+                                    }); // Navigate back to previous screen
                                 }}
                             >
                                 <FaCheck /> Thoát

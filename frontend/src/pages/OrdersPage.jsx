@@ -76,6 +76,8 @@ const OrdersPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const orderStep = location.state?.orderStep;
+
     // States for orders
     const [activeOrders, setActiveOrders] = useState([]);
     const [historyOrders, setHistoryOrders] = useState([]);
@@ -137,6 +139,27 @@ const OrdersPage = () => {
             };
         }
     }, [location.state]);
+
+    useEffect(() => {
+        console.log(location.state);
+        if (orderStep && orderStep == 3) {
+            handleDoneOrder();
+        }
+    }, []);
+
+    const handleDoneOrder = () => {
+        // Reload orders to ensure we have the latest
+        const storedActiveOrders =
+            JSON.parse(localStorage.getItem("activeOrders")) || [];
+        setActiveOrders(storedActiveOrders);
+
+        updateOrderStatus(storedActiveOrders[0]?.id, 2);
+
+        updateOrderStatus(storedActiveOrders[0]?.id, 3);
+
+        updateOrderStatus(storedActiveOrders[0]?.id, 4);
+        // Get the latest active orders from localStorage
+    };
 
     // Function to update order status - fixed to use the latest stored orders
     const updateOrderStatus = (orderId, stepNumber) => {
